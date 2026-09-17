@@ -29,6 +29,8 @@ _Pre-prompt for the cutter and this topic's agent. the operator edits freely; li
 - One line, phrased as a question the operator can say yes to, tied to a quote from him, naming the bot that would do it.
 
 ## Learned (agent-appended, newest first)
+- 2026-09-14 · 2026-09-14 · raw/inbox/2026-09-13.md's the operator line is about Steam games / remote Steam Play / AirPlay to TV on the MacBook — gaming, not music; cutter should route that line (and its keywords) to the games topic, not music.
+- 2026-09-10 · 2026-09-10 · raw/inbox/2026-09-09.md contains only Hermes internal state output (line number references) with no music evidence or the operator quotes.
 - 2026-09-07 · MLX/quant builds are expected by the operator but not yet discoverable in the runner/pipeline; runner support (not memory size) is now the primary blocker for all downloaded candidates.
 - 2026-09-07 · 2026-09-07 · the operator expects MLX/quant builds to exist for ACE-Step and MiniMax Music 3; size alone is not final—runner/packaging discoverability is the next blocker.
 - 2026-09-07 · 2026-09-07 · Step-Audio-2-mini entered local music consideration because its ~35B total parameters have only ~3B active per forward pass, potentially 10+ tok/s under MLX.
