@@ -1,8 +1,7 @@
 # BRIEF — turbofit
-_Pre-prompt for the cutter and this topic's agent. the operator edits freely; lines ending `<!-- the operator -->` are never rewritten._
 
 ## What this topic is
-> Adaptive local inference for Hermes — TurboFit Check, evidence-built TurboFit List, repaired discovery/benchmark campaigns, Qwen 3.8 DFlash2, Bonsai DSpark, FreeToken, and Sirvir.
+> Adaptive local inference for Hermes — TurboFit Check, evidence-built TurboFit List, repaired discovery/benchmark campaigns, Qwen 3.8 DFlash2, Bonsai DSpark, FreeToken, and TurboSouth.
 
 ## Belongs here (scope)
 - Anything about: turbofit
@@ -16,7 +15,7 @@ _Pre-prompt for the cutter and this topic's agent. the operator edits freely; li
 - turbofit
 
 ## Lens — how to read new context for this topic
-- What is the operator trying to achieve here, in his words? What changed since the last pass?
+- What is sovthpaw trying to achieve here, in his words? What changed since the last pass?
 - Which statements are DECISIONS (dated, with why), which are PREFERENCES, which are PAINS, which are open QUESTIONS?
 - What did he say twice? (repetition = a skill or a rule)
 
@@ -25,7 +24,7 @@ _Pre-prompt for the cutter and this topic's agent. the operator edits freely; li
 - Bots first, then loops; reuse a fleet bot when one fits; skills auto-apply. No pitches about the build process itself.
 
 ## What a good suggestion looks like here
-- One line, phrased as a question the operator can say yes to, tied to a quote from him, naming the bot that would do it.
+- One line, phrased as a question sovthpaw can say yes to, tied to a quote from him, naming the bot that would do it.
 
 ## Learned (agent-appended, newest first)
 |- 2026-09-10 · 2026-09-10 · Senter Wiki UI/backend restoration items (`system-live.json` FILE_CAP bug, CONTEXT→WIKI rename, vault-live.html restoration) cut to turbofit on consecutive dates (09-09, 09-10) — pattern is recurring; both raw items entirely misrouted to senter-wiki.
