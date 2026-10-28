@@ -5,7 +5,7 @@ Everything the operator has said, built, decided or worried about regarding **tu
 
 ## Conventions (llm-wiki skill)
 - `raw/` is immutable. `raw/inbox/YYYY-MM-DD.md` = the watcher's per-message filings; `raw/sources/` = transcripts, exports, specs, source code.
-- `wiki/` pages: lowercase-hyphen filenames, YAML frontmatter (title, created, updated, type, tags, sources, confidence), ≥2 `[[wikilinks]]`, provenance `^[raw/…]` on synthesized paragraphs.
+- `wiki/` pages: lowercase-hyphen filenames, YAML frontmatter (title, created, updated, type, tags, sources, confidence), ≥2 `wikilinks`, provenance `^[raw/…]` on synthesized paragraphs.
 - Every page is listed in `index.md`; every action appended to `log.md`. Pages > 200 lines split. Contradictions noted with dates, `contested: true`.
 - the operator's corrections win: lines marked `<!-- the operator -->` are never rewritten.
 
