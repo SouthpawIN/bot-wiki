@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-14
+updated: 2026-11-15
 tags: [fleet, index]
 ---
 
@@ -10,7 +10,7 @@ tags: [fleet, index]
 Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision). Verified against every
-`bots/*/BOT.md` on 2026-11-14: status and live-loop count are read from each
+`bots/*/BOT.md` on 2026-11-15: status and live-loop count are read from each
 BOT.md's frontmatter and its own Loops table; "Blocked on" compresses that bot's
 `## Needs from the operator`, never invents one. Both `live` loops are backed by real
 cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *` and
@@ -45,11 +45,11 @@ workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
 
 ## Known drift
 
-- `ai-daw/stem-separation` and `anser/faq-distill` exist on disk but are not yet
-  declared in their own Skills tables — only the owning bot edits its BOT.md.
-  Open since 2026-11-10 and 2026-11-11; the validator counts them (33 skills) but
-  neither bot's published skill lists them, so the procedure exists and is
-  unreachable from the bot that owns it.
+- `ai-daw/stem-separation`, `anser/faq-distill` and `turbofit/benchmark-rung`
+  exist on disk but are not yet declared in their own Skills tables — only the
+  owning bot edits its BOT.md. Open since 2026-11-10, 2026-11-11 and 2026-11-15;
+  the validator counts them (34 skills) but no owning bot's published skill lists
+  them, so the procedure exists and is unreachable from the bot that owns it.
 - `ssi`: the program inventory the fleet queue still lists as missing to-do work
   is already written into `bots/ssi/BOT.md` (six programs, first form each,
   2026-11-07). What is missing is the operator's per-child status, not the list — the
