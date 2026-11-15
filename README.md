@@ -34,8 +34,7 @@ you  ──►  Senter (conversation)  ──►  the bot that owns the work  �
 | **Bots** | One owner per project: mission, procedures, queue, clock, and the things it may never do alone. | `bots/<slug>/` |
 | **Wiki** | The shared understanding: what each bot knows, what is owed, what changed, what is blocked. | markdown files |
 
-Senter is personified as the three-eyed owl in Herm and backed by an unnamed,
-tool-free speech-to-speech auxiliary. It is not a tenth bot and it keeps no project
+Senter is a tool-free speech-to-speech auxiliary. It is not a tenth bot and it keeps no project
 state of its own — it routes, and the state stays on disk where you can read it.
 
 ## The four primitives
