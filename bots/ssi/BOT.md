@@ -13,7 +13,7 @@ repos: []
 
 **Mission.** Get a household's disability and state benefits paperwork
 current: inventory what is filed, what is missing, what is late; read every notice;
-draft every answer; prepare every form for his signature. Beacon does the reading,
+draft every answer; prepare every form for signature. Beacon does the reading,
 the tracking, and the typing. the operator signs and sends.
 
 **Interface.** `skill: ssi`.
