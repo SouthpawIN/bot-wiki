@@ -52,7 +52,7 @@ workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
   them, so the procedure exists and is unreachable from the bot that owns it.
 - `ssi`: the program inventory the fleet queue still lists as missing to-do work
   is already written into `bots/ssi/BOT.md` (six programs, first form each,
-  2026-11-07). What is missing is the operator's per-child status, not the list — the
+  2026-11-07). What is missing is per-member status, not the list — the
   queue row was reworded on 2026-11-13 rather than left to read as unstarted.
 - `hermes`: the 443 serve proxy points at `127.0.0.1:8788` (nothing listening),
   not the documented `8091`; `:9119` binds `0.0.0.0`. Recorded in its own log,
