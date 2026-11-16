@@ -25,17 +25,23 @@ Then, in this order:
 
 Never touch a BOT.md you do not own. Never arm, edit, or remove a cron job.
 
+Before any commit, run `python tools/privacy_gate.py . --staged`. A non-zero
+exit means a household fact or credential is staged: unstage it, revert your
+edit, and report. The full audit (`python tools/privacy_gate.py .`) is
+read-only evidence; never "fix" it by adding an allowlist entry.
+
 ## Git contract
 
 The workdir is a clone. You MAY commit and push, but only within the blast radius
-below, and only when both gates pass.
+below, and only when every gate passes.
 
 - Allowed: `bots/**` prose — BOT.md log lines, `.system/queue.md` status marks,
   `.system/injections.md`, `skills/**/SKILL.md`, and a loop's `state:` cell.
 - Forbidden: `senter_agent/**`, `tests/**`, `scripts/**`, `catalogs/**`, and any
   `loops/**` change other than a `state:` cell.
-- Gates: `PYTHONPATH=. pytest -q` and `python scripts/verify_bots.py .` must both
-  pass first. A red gate means revert your edits and report instead of pushing.
+- Gates: `PYTHONPATH=. pytest -q`, `python scripts/verify_bots.py .`, and
+  `python tools/privacy_gate.py . --staged` must all pass first. A red gate
+  means revert your edits and report instead of pushing.
 - Commit subject: `chore(bot): <what changed>` with the bot slug in the body.
 
 Post the diff summary as your final message, max 6 lines.

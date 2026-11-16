@@ -1,0 +1,6 @@
+#!/bin/sh
+# Privacy gate: refuse a commit that stages household facts or a leaked
+# credential. Install once per clone with:  git config core.hooksPath .githooks
+set -e
+root=$(git rev-parse --show-toplevel)
+exec python3 "$root/tools/privacy_gate.py" "$root" --staged

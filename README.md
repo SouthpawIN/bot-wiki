@@ -151,10 +151,40 @@ python -m senter_agent . --json
 
 # Contract tests and bot-layout verification
 PYTHONPATH=. pytest -q
-python scripts/verify_bots.py .          # bots=9 skills=28 loops=12 problems=0
+python scripts/verify_bots.py .          # bots=9 skills=34 loops=12 problems=0
+python tools/privacy_gate.py .           # every branch + history; must PASS
 
-# Publish each bot as a Hermes skill named bot-<slug>
+# Publish each bot as a Hermes skill named bot-<slug>, plus the shared fleet skills
 python tools/publish_skills.py . ~/.hermes
+
+# Install the privacy gate as a pre-commit hook (once per clone)
+git config core.hooksPath .githooks
+```
+
+### The privacy gate
+
+The wiki is public, so a household fact or a leaked credential must fail before
+it lands, not be found by hand afterwards. `tools/privacy_gate.py` scans the
+working tree, every local and remote branch tip (reported one line per branch),
+and every blob reachable from any commit. It blocks on:
+
+| Rule | Catches |
+|---|---|
+| `secret` | the two known leaked passwords (by MD5/SHA-256; the plaintext is not stored) and their MD5s |
+| `state` | any of the 50 US state names |
+| `family` | children · daughter · son · custody · father · mother · spouse · wife · husband · minor(s) |
+| `ssn` | dashed SSN/ITIN shapes (`123-45-6789`) |
+| `ebay` | eBay application IDs (`Name-Name-PRD-0123456789-abcdef12`) |
+
+It exits non-zero on a substantive hit. False positives are resolved in
+`tools/privacy_allowlist.txt` — one tab-separated entry with a one-line
+justification — never by loosening a pattern. The nightly `fleet-reconcile` loop
+runs the gate in `--staged` mode before its commit, and the pre-commit hook does
+the same for every human commit.
+
+```bash
+python tools/privacy_gate.py .            # full audit: tree + all branches + history
+python tools/privacy_gate.py . --staged   # what the pre-commit hook runs
 ```
 
 ## Running it on Hermes
@@ -183,9 +213,9 @@ hermes cron create "0 6 * * *" --name fleet-reconcile \
 | Check | Result |
 |---|---|
 | `PYTHONPATH=. pytest -q` | 69 passed |
-| `python scripts/verify_bots.py .` | 9 bots · 28 skills · 12 loops · **0 problems** |
+| `python scripts/verify_bots.py .` | 9 bots · 34 skills · 12 loops · **0 problems** |
 | `python -m senter_agent . --json` | 78 documents, 9 `type: bot` documents |
-| Published skills | 9 × `bot-<slug>` |
+| Published skills | 9 × `bot-<slug>` + 2 shared fleet skills |
 | Armed loops | 1 (`fleet-reconcile`, 06:00 UTC) |
 
 The validator exits nonzero on: a missing `type: bot`, a slug that disagrees with

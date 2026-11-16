@@ -40,9 +40,13 @@ The nightly procedure. Read-only until step 5.
 
 ## Git contract
 
-Commit and push only `bots/**` prose, only after both gates pass; never touch
+Commit and push only `bots/**` prose, only after every gate passes; never touch
 `senter_agent/`, `tests/`, `scripts/`, `catalogs/`, or a loop's schedule. A
 maintainer that can edit its own validator has no validator.
+
+Gates, in order: `python tools/privacy_gate.py . --staged` (blocks a household
+fact or credential before it lands), `python scripts/verify_bots.py .`, and
+`PYTHONPATH=.:/opt/data/pylibs /opt/data/.local/bin/pytest -q`.
 
 ## Commands
 
@@ -51,6 +55,7 @@ cd ~/work/agent-wiki
 python -m senter_agent . --json | jq '.documents, (.proposals|length)'
 python -m senter_agent . --status
 python scripts/verify_bots.py .          # bots=9 skills=N loops=N problems=0
+python tools/privacy_gate.py . --staged  # pre-commit gate; must exit 0
 PYTHONPATH=.:/opt/data/pylibs /opt/data/.local/bin/pytest -q
 # `python -m pytest` fails here: the hermes venv has no pytest. Use the binary.
 # this container's venv has no pypdf either; tests need it on the path.

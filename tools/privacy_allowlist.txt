@@ -1,0 +1,33 @@
+# Privacy gate allowlist.
+#
+# One tab-separated entry per line:
+#   rule <TAB> path-glob <TAB> literal <TAB> one-line justification
+#
+# A hit is suppressed only when all three match: the rule, the path (fnmatch
+# against the repo-relative path), and the literal (case-insensitive substring
+# of the line; "*" means any line). Keep the pattern strict and excuse the
+# specific benign text here; never widen a rule to make a false positive go
+# away.
+#
+# rule: secret | state | family | ssn | ebay | *
+
+family	bots/kart-racer/assets/roster.json	Nous Girl	kart roster display name for the Nous Research logo mascot; the roster says plainly it is not a real person
+family	LICENSE	person	MIT license boilerplate ("any person obtaining a copy"); the word boundary already ignores "person", kept as an explicit record of the known false-positive class
+family	README.md	daughter · son	README's rule table names the family terms the gate matches; this is the rule's documentation, not a fact about a person
+ssn	README.md	123-45-6789	README's rule table shows the dashed shape the gate matches; not a person's number
+ebay	README.md	Name-Name-PRD-	README's rule table shows the app-ID shape the gate matches; not a live seller ID
+
+# The `wiki` branch is an orphaned, pre-fleet vault (3,476 files, no bots/).
+# Its prose legitimately discusses place names and uses "children" for DOM
+# nodes, delegate_task children, and model-merge candidates, so the two
+# subjective rules are scoped out of its archive roots. The objective rules --
+# secret, ssn, ebay -- still scan every line of it, including all of its
+# history.
+state	wiki-topics/**	*	archived pre-fleet vault prose: place names in articles, benchmarks and song notes, never a household fact
+family	wiki-topics/**	*	archived pre-fleet vault prose: "children" means DOM nodes, delegated subagents or model-merge candidates, never a household member
+state	topics-wiki/**	*	same archived vault tree under its older path prefix; never a household fact
+family	topics-wiki/**	*	same archived vault tree under its older path prefix; "children" means DOM nodes or delegated subagents
+state	topics/**	*	pre-rename copy of the same archived vault; never a household fact
+family	topics/**	*	pre-rename copy of the same archived vault; "children" means DOM nodes or delegated subagents
+state	vault-live.html	*	legacy single-file vault dashboard from that archive; place names are UI copy, not a household fact
+family	vault-live.html	*	legacy single-file vault dashboard from that archive; "children" means DOM children

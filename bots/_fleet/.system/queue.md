@@ -26,4 +26,4 @@ one-line ask.
 
 ## Context
 
-- [ ] `privacy:git-grep-gate` — run the household-fact grep in the nightly reconcile before any commit, not after | sources: bots/ssi/BOT.md, bots/bot-wiki/BOT.md
+- [x] `privacy:git-grep-gate` — run the household-fact grep in the nightly reconcile before any commit, not after | sources: bots/ssi/BOT.md, bots/bot-wiki/BOT.md
