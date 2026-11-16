@@ -6,7 +6,9 @@ audio bytes - because a 4 MB base64 payload poisons the agent's context.
 
 Engines are adapters (see daw/adapters). `dryrun` synthesises real audio with
 ffmpeg so the whole pipeline is testable without a GPU; `acestep` talks to a
-local ACE-Step server and is what production uses.
+local ACE-Step server and is the baseline; `replicate` reaches a hosted model.
+`daw.adapters.registry` owns the catalog and `auto` selection, `daw.config` owns
+the configured default, so this module never names a backend it does not need.
 """
 from __future__ import annotations
 
@@ -18,6 +20,8 @@ from dataclasses import dataclass, asdict, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from . import config
 
 LAYER_ORDER = ("drums", "bass", "harmony", "lead", "vocals", "ear-candy")
 SAMPLE_RATE = 44100
@@ -45,6 +49,9 @@ class Track:
     muted: bool = False
     version: int = 1
     bars: int = 8
+    # What was asked for ("auto" or a name), so an auto pick stays auditable.
+    engine_requested: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def signature(self) -> str:
         raw = f"{self.engine}|{self.model}|{self.seed}|{self.prompt}|{self.bars}"
@@ -62,7 +69,8 @@ class Project:
     # -- lifecycle ---------------------------------------------------------
     @classmethod
     def create(cls, projects_dir: Path, project_id: str, *, bpm: int = 120,
-               key: str = "A minor", sections: list[dict[str, Any]] | None = None) -> "Project":
+               key: str = "A minor", sections: list[dict[str, Any]] | None = None,
+               engine: str | None = None) -> "Project":
         require_ffmpeg()
         root = Path(projects_dir) / project_id
         if (root / "project.json").exists():
@@ -77,6 +85,9 @@ class Project:
             "tracks": [],
             "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         }
+        if engine:
+            # A pinned engine travels with the project; "auto" re-probes each run.
+            project.data["engine"] = str(engine)
         project.save()
         return project
 
@@ -112,14 +123,24 @@ class Project:
 
     # -- generation --------------------------------------------------------
     def generate_layer(self, *, instrument: str, prompt: str, seed: int | None = None,
-                       engine: str = "dryrun", bars: int | None = None,
+                       engine: str | None = None, bars: int | None = None,
                        engines: dict[str, Any] | None = None) -> dict[str, Any]:
-        """Generate one layer. Idempotent on (engine, model, seed, prompt, bars)."""
-        require_ffmpeg()
-        from .adapters import get_engine
+        """Generate one layer. Idempotent on (engine, model, seed, prompt, bars).
 
-        registry = engines if engines is not None else None
-        adapter = get_engine(engine, registry)
+        Engine resolution: this call, then the project manifest, then plugin
+        config. ``auto`` probes the catalog in preference order and records the
+        request and the pick; when nothing is available, every reason is listed.
+        """
+        require_ffmpeg()
+        from .adapters import NoEngineAvailable, as_artifact, availability, select
+
+        requested = str(engine or self.data.get("engine") or config.engine_choice())
+        try:
+            adapter, skipped = select(requested, engines)
+        except NoEngineAvailable as exc:
+            return {"ok": False, "error": f"no engine available for engine={requested}",
+                    "hint": exc.remedy(), "engines": exc.reasons}
+
         bars = int(bars or self.total_bars())
         seed = int(seed if seed is not None else _stable_seed(instrument, prompt))
 
@@ -127,7 +148,7 @@ class Project:
         candidate = Track(
             id=existing.id if existing else _slug(instrument),
             instrument=instrument, engine=adapter.name, model=adapter.model,
-            seed=seed, prompt=prompt, bars=bars,
+            seed=seed, prompt=prompt, bars=bars, engine_requested=requested,
         )
         if existing and existing.signature() == candidate.signature() and existing.files:
             relative = existing.files[-1]
@@ -135,40 +156,50 @@ class Project:
                 return {"ok": True, "reused": True, "project": self.data["id"],
                         "track": existing.id, "version": existing.version,
                         "path": relative, "engine": existing.engine,
-                        "model": existing.model, "seed": existing.seed, "elapsed_s": 0.0}
+                        "engine_requested": existing.engine_requested or existing.engine,
+                        "model": existing.model, "seed": existing.seed,
+                        "selection": {"requested": requested, "picked": existing.engine,
+                                      "skipped": skipped},
+                        "metadata": existing.metadata, "elapsed_s": 0.0}
 
-        if not adapter.health():
-            return {"ok": False, "error": f"engine '{engine}' is not available",
-                    "hint": adapter.install_hint}
+        ok, reason = availability(adapter)
+        if not ok:
+            return {"ok": False, "error": f"engine '{requested}' is not available",
+                    "hint": reason or getattr(adapter, "install_hint", "")}
 
         version = (existing.version + 1) if existing else 1
         relative = f"stems/{candidate.id}/v{version}.wav"
         out_path = self.root / relative
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
-        result = adapter.generate(
+        artifact = as_artifact(adapter.generate(
             request={
                 "prompt": prompt, "duration_s": round(bars * 4 * 60.0 / float(self.data["bpm"]), 3),
                 "bpm": self.data["bpm"], "key": self.data["key"], "seed": seed,
                 "instrument": instrument, "output": str(out_path),
                 "reference": self.reference_mix(),
             }
-        )
-        if not result.get("ok"):
-            return {"ok": False, "error": result.get("error", "generation failed"),
-                    "hint": result.get("hint", "")}
+        ), fallback_name=adapter.name, fallback_model=adapter.model)
+        if not artifact.ok:
+            return {"ok": False, "error": artifact.error or "generation failed",
+                    "hint": artifact.hint or "", "engine": adapter.name}
 
         track = asdict(candidate)
         track["files"] = (existing.files if existing else []) + [relative]
         track["version"] = version
         track["gain_db"] = existing.gain_db if existing else _default_gain(instrument)
         track["muted"] = existing.muted if existing else False
+        track["metadata"] = dict(artifact.metadata)
         self._upsert_track(track)
         self.save()
         return {"ok": True, "reused": False, "project": self.data["id"], "track": candidate.id,
                 "version": version, "path": relative, "engine": adapter.name,
-                "model": adapter.model, "seed": seed,
-                "elapsed_s": result.get("elapsed_s", 0.0)}
+                "engine_requested": requested,
+                "model": artifact.model or adapter.model, "seed": seed,
+                "selection": {"requested": requested, "picked": adapter.name,
+                              "skipped": skipped},
+                "metadata": dict(artifact.metadata),
+                "elapsed_s": artifact.elapsed_s}
 
     def _upsert_track(self, track: dict[str, Any]) -> None:
         tracks = self.data["tracks"]
@@ -276,8 +307,11 @@ class Project:
         missing = [name for name in LAYER_ORDER if not any(t.instrument == name for t in tracks)]
         return {
             "ok": True, "project": self.data["id"], "bpm": self.data["bpm"], "key": self.data["key"],
+            "engine": self.data.get("engine") or config.engine_choice(),
             "duration_s": self.duration_seconds(),
             "tracks": [{"id": t.id, "instrument": t.instrument, "engine": t.engine,
+                        "engine_requested": t.engine_requested or t.engine,
+                        "model": t.model,
                         "version": t.version, "muted": t.muted, "gain_db": t.gain_db,
                         "files": len(t.files)} for t in tracks],
             "missing_layers": missing,

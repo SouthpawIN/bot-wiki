@@ -2,7 +2,8 @@
 
 Not a music model. It exists so the whole pipeline - manifest, versions, reference
 mix, stems, loudness - is exercisable without a GPU, and so a dead engine degrades
-into something audible rather than an exception.
+into something audible rather than an exception. Every artifact it returns is
+labelled ``dryrun``: it never claims to be a model render.
 """
 from __future__ import annotations
 
@@ -11,7 +12,7 @@ import subprocess
 import time
 from typing import Any
 
-from .base import Capabilities
+from .base import Artifact, Capabilities, EngineBase
 
 # A different timbre per layer so stems are distinguishable by ear and by spectrum.
 VOICES = {
@@ -24,29 +25,26 @@ VOICES = {
 }
 
 
-class DryRunEngine:
+class DryRunEngine(EngineBase):
     name = "dryrun"
     model = "dryrun-ffmpeg-1"
-    install_hint = "needs ffmpeg on PATH"
+    install_hint = "install ffmpeg (e.g. `apt install ffmpeg`) so it is on PATH"
 
     def capabilities(self) -> Capabilities:
         return Capabilities(duration_s=600.0, vocals=False, stems=True,
                             bpm_key_conditioning=True, local=True, license="MIT")
 
-    def health(self) -> bool:
-        return shutil.which("ffmpeg") is not None
+    def available(self) -> tuple[bool, str]:
+        if shutil.which("ffmpeg"):
+            return True, ""
+        return False, self.install_hint
 
-    def generate(self, request: dict[str, Any]) -> dict[str, Any]:
+    def generate(self, request: dict[str, Any]) -> Artifact:
         started = time.monotonic()
         instrument = str(request.get("instrument", "lead"))
         source, effect = VOICES.get(instrument, VOICES["lead"])
         duration = float(request.get("duration_s", 8.0))
         out = str(request["output"])
-
-        graph = source
-        if effect:
-            graph += f",{effect}"
-        graph += f",afade=t=in:d=0.05,afade=t=out:st={max(0.0, duration - 0.2)}:d=0.2"
 
         result = subprocess.run(
             ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
@@ -57,8 +55,11 @@ class DryRunEngine:
             capture_output=True, text=True,
         )
         if result.returncode != 0:
-            return {"ok": False, "error": result.stderr.strip()[:300],
-                    "hint": "check ffmpeg's lavfi sine support"}
-        return {"ok": True, "audio_paths": [out], "stems": False,
-                "seed_used": request.get("seed"), "model": self.model,
-                "cost": 0.0, "elapsed_s": round(time.monotonic() - started, 3)}
+            return Artifact(ok=False, engine=self.name, model=self.model,
+                            error=result.stderr.strip()[:300],
+                            hint="check ffmpeg's lavfi sine support")
+        return Artifact(ok=True, engine=self.name, model=self.model,
+                        audio_paths=[out], stems=False,
+                        seed_used=request.get("seed"), cost=0.0,
+                        elapsed_s=round(time.monotonic() - started, 3),
+                        metadata={"generator": "ffmpeg lavfi", "instrument": instrument})

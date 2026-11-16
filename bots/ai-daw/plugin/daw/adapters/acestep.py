@@ -1,8 +1,11 @@
 """ACE-Step adapter: a thin client over a local ACE-Step server.
 
 This wraps the real API; it does not reimplement inference. Point it at the
-ACE-Step server with DAW_ACESTEP_URL (default http://127.0.0.1:8091/ is *not*
-used - that is TurboFit; ACE-Step defaults to 7860 for the Gradio API).
+ACE-Step server with DAW_ACESTEP_URL (default http://127.0.0.1:7860 for the
+ACE-Step Gradio API).
+
+0.1 behaviour is preserved: the engine returns ``ok=False`` with a readable
+reason when the server is down rather than raising.
 """
 from __future__ import annotations
 
@@ -14,13 +17,13 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from .base import Capabilities
+from .base import Artifact, Capabilities, EngineBase
 
 DEFAULT_URL = "http://127.0.0.1:7860"
 TIMEOUT_S = float(os.environ.get("DAW_ACESTEP_TIMEOUT", "600"))
 
 
-class AceStepEngine:
+class AceStepEngine(EngineBase):
     name = "acestep"
     model = os.environ.get("DAW_ACESTEP_MODEL", "acestep-v1_5")
     install_hint = (
@@ -36,14 +39,19 @@ class AceStepEngine:
                             bpm_key_conditioning=True, local=True,
                             license="see the ACE-Step model card")
 
-    def health(self) -> bool:
+    def available(self) -> tuple[bool, str]:
+        if self._probe():
+            return True, ""
+        return False, f"no ACE-Step server answered at {self.url}; {self.install_hint}"
+
+    def _probe(self) -> bool:
         try:
             with urllib.request.urlopen(f"{self.url}/config", timeout=5) as response:
                 return response.status == 200
         except (urllib.error.URLError, OSError, TimeoutError):
             return False
 
-    def generate(self, request: dict[str, Any]) -> dict[str, Any]:
+    def generate(self, request: dict[str, Any]) -> Artifact:
         started = time.monotonic()
         payload = {
             "prompt": request.get("prompt", ""),
@@ -63,28 +71,31 @@ class AceStepEngine:
             with urllib.request.urlopen(call, timeout=TIMEOUT_S) as response:
                 result = json.loads(response.read().decode() or "{}")
         except urllib.error.HTTPError as exc:
-            return {"ok": False, "error": f"ACE-Step HTTP {exc.code}",
-                    "hint": exc.read().decode(errors="replace")[:200]}
+            return Artifact(ok=False, engine=self.name, model=self.model,
+                            error=f"ACE-Step HTTP {exc.code}",
+                            hint=exc.read().decode(errors="replace")[:200])
         except (urllib.error.URLError, OSError, TimeoutError) as exc:
-            return {"ok": False, "error": f"ACE-Step unreachable: {exc}",
-                    "hint": self.install_hint}
+            return Artifact(ok=False, engine=self.name, model=self.model,
+                            error=f"ACE-Step unreachable: {exc}", hint=self.install_hint)
 
         produced = result.get("audio_path") or result.get("path")
         if not produced:
-            return {"ok": False, "error": "ACE-Step returned no audio path",
-                    "hint": "check the server log; the API shape may have changed"}
+            return Artifact(ok=False, engine=self.name, model=self.model,
+                            error="ACE-Step returned no audio path",
+                            hint="check the server log; the API shape may have changed")
 
         dest = Path(request["output"])
         dest.parent.mkdir(parents=True, exist_ok=True)
         source = Path(produced)
-        if source.exists():
-            if dest.exists():
-                dest.unlink()
-            source.replace(dest)
-        else:
-            return {"ok": False, "error": f"ACE-Step reported a missing file: {produced}",
-                    "hint": "server and client must share a filesystem, or return a URL"}
-        return {"ok": True, "audio_paths": [str(dest)], "stems": False,
-                "seed_used": payload["seed"], "model": self.model,
-                "cost": result.get("cost", 0.0),
-                "elapsed_s": round(time.monotonic() - started, 3)}
+        if not source.exists():
+            return Artifact(ok=False, engine=self.name, model=self.model,
+                            error=f"ACE-Step reported a missing file: {produced}",
+                            hint="server and client must share a filesystem, or return a URL")
+        if dest.exists():
+            dest.unlink()
+        source.replace(dest)
+        return Artifact(ok=True, engine=self.name, model=self.model,
+                        audio_paths=[str(dest)], stems=False,
+                        seed_used=payload["seed"], cost=result.get("cost", 0.0),
+                        elapsed_s=round(time.monotonic() - started, 3),
+                        metadata={"server": self.url})
