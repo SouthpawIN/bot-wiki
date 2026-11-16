@@ -15,7 +15,7 @@ Daily 07:00. Nothing else in this bot matters if a deadline slips.
 ## Prompt
 
 Read `cases/_deadlines.md`. Report rows due in 10, 5, or 1 days, and anything
-overdue, one line each: beneficiary initials, program, what is due, days left, and the
+overdue, one line each: beneficiary label, program, what is due, days left, and the
 single action the operator must take. If nothing is within 10 days, say "clear" and stop.
 Never contact an agency. Never mark something sent that the operator has not sent.
 
