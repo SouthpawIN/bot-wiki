@@ -8,7 +8,7 @@ one-line ask.
 ## Bot
 
 - [ ] `ssi:private-profile` — the operator creates `$HERMES_PRIVATE/ssi/profile.md` from the published schema; until it exists Beacon stays generic and specific operation stays blocked | sources: bots/ssi/BOT.md, bots/ssi/.system/profiles/README.md
-- [ ] `youtube:long-session-parts` — prove a 3-hour OBS recording segments and renders in parts at 1080p60, dead air dropped at pause boundaries | sources: bots/youtube/BOT.md
+- [~] `youtube:long-session-parts` — DEFERRED by the operator 2026-11-16: "we deposit YouTube stuff for now cuz I'm not doing anything interesting that needs to be cut but I do want that pipeline ready". Pipeline is built and verified (cutroom CLI + topic grouping + render path; the 4 ffmpeg render tests are marked `slow`, run with `pytest --runslow`). No source material, so no end-to-end run. Reopen when a raw OBS session exists. | sources: bots/youtube/BOT.md, conftest.py
 - [x] `turbofit:index-pension` — purge retired deep-swe/agentic-pair rows and make every unmeasured configuration read "no measurements yet", suites N/4 | sources: bots/turbofit/BOT.md | done: turbofit@78f63db — HERMES_INDEX_SUITES is the four Hermes suites, REQUIRED_BENCHMARKS aliases it, records 0, README reads "no measurements yet" and names the old 46.9 record as superseded
 - [ ] `turbofit:peer-discovery` — a second TurboFit machine's models must appear as health-checked peer routes without re-download | sources: bots/turbofit/BOT.md
 - [ ] `kart-racer:character-audit` — audit every roster entry against the canonical NRCU sheet: at work, no invented accessories, no restyle | sources: bots/kart-racer/BOT.md
