@@ -83,13 +83,24 @@ def parse_directory(markdown: str) -> list[tuple[str, str]]:
     return sorted(seen.items(), key=lambda item: item[1])
 
 
+WORD = re.compile(r"[a-z0-9]+")
+
+
+def words_of(text: str) -> set[str]:
+    """Whole words only. Substring matching made 'catalogued' read as 'cat',
+    'has not been recorded' as 'bee' and 'mechanical' as 'mech'."""
+    return set(WORD.findall(text.lower()))
+
+
 def weight_class(profile: str, display: str) -> tuple[str, str]:
-    text = (profile + " " + display).lower()
+    # Split CamelCase so a display name like FatCat still yields the word "cat".
+    spaced = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", display)
+    words = words_of(f"{profile} {spaced}")
     for hint in HEAVY_HINTS:
-        if hint in text:
+        if hint in words:
             return "heavy", f"build hint '{hint}' in the profile"
     for hint in LIGHT_HINTS:
-        if hint in text:
+        if hint in words:
             return "light", f"build hint '{hint}' in the profile"
     return "medium", "no build hint in the profile; medium is the default"
 

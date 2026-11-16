@@ -49,6 +49,17 @@ def test_weight_class_comes_from_the_profile_not_a_guess() -> None:
     assert weight == "medium" and "no build hint" in reason
 
 
+def test_weight_class_reads_whole_words_not_substrings() -> None:
+    # "catalogued" contains "cat", "has not been recorded" contains "bee", and
+    # "mechanical" contains "mech". None of them are build hints.
+    profile = "A figure in a mechanical mask, catalogued in the archive; no timestamp has been recorded.\n"
+    weight, reason = r.weight_class(profile, "Example")
+    assert weight == "medium" and "no build hint" in reason
+
+    # CamelCase display names still yield their word: FatCat is a cat.
+    assert r.weight_class("No description at all.\n", "FatCat")[0] == "light"
+
+
 def test_stats_are_deterministic_and_bounded() -> None:
     first = r.derive_stats("cthulhu", "heavy")
     assert first == r.derive_stats("cthulhu", "heavy")

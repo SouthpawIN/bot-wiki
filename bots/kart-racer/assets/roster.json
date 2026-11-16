@@ -1,6 +1,6 @@
 {
   "schema": "nrcu-kart.roster/v1",
-  "generated_at": "2026-11-08",
+  "generated_at": "2026-11-16",
   "source": "https://github.com/123mikeyd/Nous_Research_Cinematic_Universe",
   "credit": "Character and art credits per NRCU CREDITS.md",
   "count": 35,
@@ -51,8 +51,8 @@
         "weight": 3
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'cat' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'light' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "**Also known as:** 123mikeyD \u00b7 Super Shiba",
       "tags": []
     },
@@ -68,8 +68,8 @@
         "weight": 8
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'mech' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'heavy' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "**Community cameo \u2014 initial visual reference**",
       "tags": []
     },
@@ -119,8 +119,8 @@
         "weight": 4
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'bee' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'light' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "Fleety13 is included in the NRCU character library with reference sheets from [Sahil\u2019s Hermes Multiverse collection](https://github.com/Sahil-SS9/hermes-multive",
       "tags": []
     },
@@ -255,8 +255,8 @@
         "weight": 10
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'mech' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'heavy' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "Mephisto is included in the NRCU character archive. The primary artwork is a pixel-art portrait with orange hair, closed eyes, a knit sweater, and a dark jacket",
       "tags": []
     },
@@ -272,8 +272,8 @@
         "weight": 5
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'mech' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'heavy' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "**Recon / Infiltrator \u2014 affiliation redacted**",
       "tags": []
     },
@@ -323,8 +323,8 @@
         "weight": 3
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'imp' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'light' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "A skeletal jester wearing a stitched red, blue, green, and yellow outfit, a bell-tipped cap, and mismatched curled shoes. His skull grin and striking red-and-ye",
       "tags": []
     },
@@ -357,8 +357,8 @@
         "weight": 4
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'small' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'light' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "**\u201cShe might be Nous Girl\u2019s older sister who is somehow smaller than her, but we cannot be sure.\u201d**",
       "tags": []
     },
@@ -374,8 +374,8 @@
         "weight": 8
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'mech' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'heavy' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "The leader and architect of the Hermes Agent Squad.",
       "tags": []
     },
@@ -417,16 +417,16 @@
       "slug": "turbo-fit",
       "display": "Turbo Fit / Sovthpaw",
       "portrait": "Roster/Portraits/turbo-fit.webp",
-      "weight": "light",
+      "weight": "medium",
       "stats": {
         "speed": 6,
-        "accel": 5,
-        "handling": 3,
-        "weight": 2
+        "accel": 7,
+        "handling": 8,
+        "weight": 6
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'small' in the profile",
-      "locked": false,
+      "source_note": "pinned: weight medium per the profile's own build line (6'1\" / 185 cm, lean/athletic); the previous light came from the word 'small' in 'a small home workspace'. Stats are a hand-tuned medium line, not a source claim",
+      "locked": true,
       "bio_hook": "**Turbofit / Turbo Fit** is the NRCU character for **Sovthpaw**, a community moderator and left-handed guitar player. His handle is spelled **Sovthpaw**, with a",
       "tags": []
     },
@@ -442,8 +442,8 @@
         "weight": 2
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'cat' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'light' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "The archive owner identifies **Witcheer** as the anthropomorphic duck communicating with **Kainan** in [*Thank You Nous Research* by Arts Bro](../music-videos/t",
       "tags": []
     },
@@ -510,8 +510,8 @@
         "weight": 10
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'mech' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'heavy' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "**Quark \u2014 community creator and NRCU character**",
       "tags": []
     },
@@ -527,8 +527,8 @@
         "weight": 1
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'kitten' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'light' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "realtimeuk is included in the NRCU character library with reference sheets from [Sahil\u2019s Hermes Multiverse collection](https://github.com/Sahil-SS9/hermes-multi",
       "tags": []
     },
@@ -578,8 +578,8 @@
         "weight": 3
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'imp' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'light' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "sudo-nightwing is a mustached DJ from the 1970s who somehow time-traveled to the present day. He wears a domino mask. How he got here is unexplained\u2014that's the ",
       "tags": []
     },
@@ -595,8 +595,8 @@
         "weight": 3
       },
       "credit": "Character and art credits per NRCU CREDITS.md",
-      "source_note": "build hint 'bee' in the profile",
-      "locked": false,
+      "source_note": "hand-tuned class, pinned: the NRCU profile carries no build hint for this character (was previously assigned from a substring accident); 'light' is a gameplay decision, not a source claim",
+      "locked": true,
       "bio_hook": "tdamre is included in the NRCU character library with reference sheets from [Sahil\u2019s Hermes Multiverse collection](https://github.com/Sahil-SS9/hermes-multivers",
       "tags": []
     }

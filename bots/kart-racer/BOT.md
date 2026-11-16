@@ -55,6 +55,10 @@ The game is **Nous Racers** — a play on the company, Nous Research.
   `Checkpoint`, `Respawn`, `RaceManager` (laps, standings, cup points),
   `PositionTracker`, `ItemBox`, `RosterEntry`, and the 35-character roster.
   `tools/check_project.py` validates structure and roster without Unity.
+- `bots/kart-racer/.system/roster.md` — **the sourced roster manifest and source
+  audit** (35 entries, a `source:` pointer per character, `UNSOURCED` markers for
+  anything the NRCU files do not state, plus the needs-decision list). Read it
+  before modelling or writing a character; it outranks anyone's memory of the cast.
 - `Assets/Roster/roster.json` — the derived cast table, regenerated from NRCU.
 - `bots/kart-racer/scripts/roster.py` — the generator (`build` / `validate`), plus
   `bots/kart-racer/assets/roster.json`: **35 characters derived from the live
@@ -120,3 +124,4 @@ The game is **Nous Racers** — a play on the company, Nous Research.
 - 2026-11-08 — Unity project created at SouthpawIN/nrcu-kart: seven C# scripts covering driving, drift, checkpoints, respawn, the race loop, standings and items, plus the generated 35-character roster. Not yet compiled — this container has no Unity editor, so the first Play-mode test is the operator's.
 - 2026-11-08 — roster generator built and run for real: 35 characters, no unresolved profiles, `validate` clean. Turbo Fit / Sovthpaw is in the cast with the spelling preserved. Flagged for the operator: that entry came out `light` because the profile contains the word "small"; it is unlocked, so one edit to `stats`/`weight` plus `"locked": true` pins it.
 - 2026-11-16 — brief coverage: named the NRCU source project and the TurboFit-likeness rule; added character constraints from the canonical sheet (at work, not posing, no invented accessories, no restyle) and stated the deliverable is a playable build, not a design doc.
+- 2026-11-16 — character audit: read all 35 canonical profiles at NRCU `b1e0b2a` and wrote `.system/roster.md` — one sourced entry each, 11 with no sourced vehicle concept (`UNSOURCED`, not invented), 12 too thin to model without the sheet image, 10 intra-file contradictions, 12 needs-decision items. Found and fixed a substring bug in `roster.py` (`'bee'` in "has not been recorded", `'cat'` in "catalogued", `'mech'` in "mechanical"); the 13 affected classes are pinned as hand-tuned rather than silently rebalanced, and turbo-fit is corrected light → medium per its own 6'1" lean/athletic line.
