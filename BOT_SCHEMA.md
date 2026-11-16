@@ -94,6 +94,9 @@ python tools/publish_skills.py . "$HERMES_HOME"
 
 That renders each `BOT.md` into `$HERMES_HOME/skills/bots/<slug>/SKILL.md` named
 `bot-<slug>`, so any session loads the bot with one `skill_view("bot-<slug>")`.
+It also installs every `bots/_fleet/skills/<name>/SKILL.md` verbatim under
+`$HERMES_HOME/skills/fleet/<name>/`; those are shared procedures, so they keep
+their own name instead of a `bot-` prefix.
 The published skill carries the mission, the operating loop, the artifact paths,
 the hold points, and the unblockers — the BOT.md stays the long version.
 

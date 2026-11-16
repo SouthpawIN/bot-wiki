@@ -74,11 +74,23 @@ def check(root: Path) -> list[str]:
     return problems
 
 
+def skill_counts(root: Path) -> tuple[int, int]:
+    """(bot skills, fleet skills) -- mirrors tools/publish_skills.py."""
+    bot_skills = sum(
+        1
+        for path in root.glob("bots/*/skills/*/SKILL.md")
+        if not path.relative_to(root).parts[1].startswith("_")
+    )
+    fleet_skills = len(list(root.glob("bots/_fleet/skills/*/SKILL.md")))
+    return bot_skills, fleet_skills
+
+
 def main() -> int:
     root = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
     problems = check(root)
     bots = len(list(root.glob("bots/*/BOT.md")))
-    skills = len(list(root.glob("bots/*/skills/*/SKILL.md")))
+    bot_skills, fleet_skills = skill_counts(root)
+    skills = bot_skills + fleet_skills
     loops = len(list(root.glob("bots/*/loops/*.md")))
     print(f"bots={bots} skills={skills} loops={loops} problems={len(problems)}")
     for problem in problems:

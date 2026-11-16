@@ -65,9 +65,9 @@ workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
 - `hermes`: the 443 serve proxy points at `127.0.0.1:8788` (nothing listening),
   not the documented `8091`; `:9119` binds `0.0.0.0`. Recorded in its own log,
   unfixed.
-- `bots/_fleet/skills/*` (`sovthpaw-voice`, `wifi-scanner-control`) is not
-  installed by `tools/publish_skills.py`, which renders `bots/*/BOT.md` only.
-  Queued; needs a `tools/` change Klerik may not make.
+- `bots/_fleet/skills/*` (`sovthpaw-voice`, `wifi-scanner-control`) **is now**
+  installed by `tools/publish_skills.py` under `$HERMES_HOME/skills/fleet/<name>/`
+  (2026-11-16), and `verify_bots.py` counts the fleet skills explicitly.
 - `.system/` is gitignored, so queues and injections are per-clone state. The
   clone at `~/.hermes/wiki` carried none on 2026-11-12; the maintainer edits
   `~/work/agent-wiki` and mirrors them. Two clones, one queue, is a fork waiting
@@ -82,9 +82,8 @@ workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
   share (or a re-clone step at the start of the run) can.
 - `pocketshop` ↔ `ssi` flatbed arbitration is one table in
   `bots/_fleet/skills/wifi-scanner-control` (07:00–19:00 cards, 19:00–07:00
-  documents, `deadline-watch` outranks both). It is written but unpublished —
-  same `publish_skills.py` gap as below — so neither bot's installed skill
-  contains it yet.
+  documents, `deadline-watch` outranks both). Published to
+  `$HERMES_HOME/skills/fleet/wifi-scanner-control/` as of 2026-11-16.
 
 ## Cross-bot dependencies
 

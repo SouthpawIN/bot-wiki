@@ -18,7 +18,7 @@ one-line ask.
 
 ## Skill
 
-- [ ] `publish-fleet-skills` — `tools/publish_skills.py` still renders `bots/*/BOT.md` only, so `bots/_fleet/skills/*` is never installed | sources: bots/_fleet/FLEET.md
+- [x] `publish-fleet-skills` — `tools/publish_skills.py` still renders `bots/*/BOT.md` only, so `bots/_fleet/skills/*` is never installed | sources: bots/_fleet/FLEET.md
 
 ## Loop
 

@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-"""Publish every wiki bot as a Hermes skill, one loader per bot.
+"""Publish every wiki bot as a Hermes skill, one loader per bot, plus the shared
+fleet skills.
 
 The wiki is the source of truth. This script renders `bots/<slug>/BOT.md` into
 `$HERMES_HOME/skills/bots/<slug>/SKILL.md` so a session can load the bot with a
-single skill_view("bot-<slug>").
+single skill_view("bot-<slug>"). It also installs every
+`bots/_fleet/skills/<name>/SKILL.md` as `$HERMES_HOME/skills/fleet/<name>/`
+verbatim: fleet skills are shared procedures, not bot identities, so they keep
+their own name instead of a `bot-` prefix.
 
 Usage:
     python tools/publish_skills.py [wiki-root] [hermes-home]
@@ -131,6 +135,36 @@ def render(bot_file: Path, wiki_root: Path) -> tuple[str, str]:
     return slug, "\n".join(lines)
 
 
+def publish_fleet(wiki_root: Path, skills_root: Path) -> int:
+    """Install `bots/_fleet/skills/<name>/SKILL.md` under `skills/fleet/<name>`.
+
+    Naming discipline: the frontmatter name must match the directory and the
+    skill must declare a description. Fleet skills are published verbatim --
+    they are hand-written procedures, not generated bot loaders.
+    """
+    published = 0
+    for skill_file in sorted(wiki_root.glob("bots/_fleet/skills/*/SKILL.md")):
+        text = skill_file.read_text(encoding="utf-8")
+        meta = frontmatter(text)
+        folder = skill_file.parent.name
+        name = meta.get("name", "")
+        if name != folder:
+            print(
+                f"refused {skill_file}: frontmatter name {name!r} != directory {folder!r}",
+                file=sys.stderr,
+            )
+            return -1
+        if not meta.get("description"):
+            print(f"refused {skill_file}: missing description", file=sys.stderr)
+            return -1
+        target = skills_root / "fleet" / name / "SKILL.md"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text, encoding="utf-8")
+        published += 1
+        print(f"published {name} -> {target}")
+    return published
+
+
 def main() -> int:
     wiki_root = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
     hermes_home = Path(sys.argv[2] if len(sys.argv) > 2 else os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
@@ -145,7 +179,12 @@ def main() -> int:
         target.write_text(content, encoding="utf-8")
         published += 1
         print(f"published bot-{slug} -> {target}")
-    print(f"{published} bot skills published under {skills_root}/bots")
+    fleet = publish_fleet(wiki_root, skills_root)
+    if fleet < 0:
+        return 1
+    print(
+        f"{published} bot skills + {fleet} fleet skills published under {skills_root}"
+    )
     return 0
 
 
