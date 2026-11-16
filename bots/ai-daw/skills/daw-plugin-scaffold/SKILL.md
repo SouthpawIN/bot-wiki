@@ -16,12 +16,15 @@ metadata:
 `bots/ai-daw/plugin/` is this scaffold, built and tested:
 
 ```
-plugin.yaml            six daw_* tools, python_runtime: external (stdlib + ffmpeg)
+plugin.yaml            seven daw_* tools, python_runtime: external (stdlib + ffmpeg)
 plugin_tools.py        thin wrappers: resolve project id -> daw.core -> small dict
 daw/core.py            Project: manifest, generate_layer, reference_mix, render_stems, render_mix
-daw/adapters/base.py   MusicEngine protocol + get_engine()
+daw/config.py          engine choice + credentials: env, else ~/.hermes/daw-config.json
+daw/adapters/base.py   Engine protocol, Artifact, availability(), get_engine()
+daw/adapters/registry.py  catalog, aliases, `auto` selection with reasons
 daw/adapters/dryrun.py ffmpeg lavfi voices per instrument - real audio, no GPU
 daw/adapters/acestep.py HTTP client for a local ACE-Step server
+daw/adapters/replicate.py hosted model client (MusicGen by default) - needs DAW_REPLICATE_TOKEN
 ```
 
 Run it: `PYTHONPATH=bots/ai-daw/plugin python -m pytest bots/ai-daw/tests -q`.

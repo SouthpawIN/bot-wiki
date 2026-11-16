@@ -1,15 +1,17 @@
 name: ai-daw
-version: "0.1.0"
-description: Drive a music DAW from conversation - projects, layers, stems, and mixes
+version: "0.2.0"
+description: Drive a music DAW from conversation - projects, layers, stems, and mixes, on any music engine
 author: sovthpaw
 license: MIT
 homepage: https://github.com/SouthpawIN/ACE-Step-DAW
 kind: standalone
 # Pure stdlib plus ffmpeg on PATH: nothing to install into Hermes' environment.
+# Engines are clients (ACE-Step over HTTP, Replicate over HTTPS), not bundled weights.
 python_runtime: external
 provides_tools:
   - daw_project_create
   - daw_project_status
+  - daw_engines_list
   - daw_layer_generate
   - daw_track_set
   - daw_render_stems

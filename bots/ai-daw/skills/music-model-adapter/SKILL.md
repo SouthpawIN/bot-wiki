@@ -17,16 +17,20 @@ prompt set.
 ## Interface (every adapter implements)
 
 ```python
-class MusicEngine(Protocol):
+class Engine(Protocol):
     name: str
-    def capabilities(self) -> dict:   # duration_s, vocals, stems, bpm_key_cond, streaming, local, license
-    def generate(self, req: GenerationRequest) -> GenerationResult
-    def health(self) -> bool
+    def capabilities(self) -> Capabilities   # duration_s, vocals, stems, bpm_key_conditioning, local, license
+    def available(self) -> tuple[bool, str]  # False + the exact install step / config key
+    def generate(self, req) -> Artifact      # ok=False carries error + hint; ok=True means a file exists
 ```
 
 `GenerationRequest`: `{prompt, lyrics, duration_s, bpm, key, seed, stems_wanted,
-reference_audio, section_map}`. `GenerationResult`: `{audio_paths, stems,
-seed_used, model, cost, elapsed_s}`.
+reference_audio, section_map}`. `Artifact`: `{ok, engine, model, audio_paths,
+stems, seed_used, cost, elapsed_s, error, hint, metadata}`.
+
+Register the adapter in `daw/adapters/registry.py` (`CATALOG` + `AUTO_ORDER`).
+Selection is `engine: <name>|auto`; `auto` takes the first available in order and
+records both the request and the pick in the manifest.
 
 ## Candidates and what they are good at
 

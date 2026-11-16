@@ -53,9 +53,10 @@ is not negotiable for any engine behind it.
 ## Owns
 
 - `bots/ai-daw/plugin/` — the working plugin: `plugin.yaml`, `plugin_tools.py`
-  (six `daw_*` tools), `daw/core.py` (manifest, versions, reference mix, stems,
-  loudnorm mix), and `daw/adapters/` (`base`, `dryrun`, `acestep`). Fourteen tests
-  in `bots/ai-daw/tests/` run the whole pipeline on synthesised audio, no GPU.
+  (seven `daw_*` tools), `daw/core.py` (manifest, versions, reference mix, stems,
+  loudnorm mix), `daw/config.py`, and `daw/adapters/` (`base`, `registry`,
+  `dryrun`, `acestep`, `replicate`). Twenty-eight tests in `bots/ai-daw/tests/`
+  run the whole pipeline on synthesised audio, no GPU and no model weights.
 - The plugin: `~/.hermes/plugins/ai-daw/{plugin.yaml,plugin_tools.py,adapters/,projects/}`.
 - `adapters/<engine>.py` — one file per music model, same interface.
 - Project format: `project.json` (bpm, key, sections, track list, seeds) + `stems/`.
@@ -114,3 +115,4 @@ is not negotiable for any engine behind it.
 - 2026-11-07 — bot seeded; adapter interface specified; ACE-Step 1.5 registered as baseline engine.
 - 2026-11-08 — plugin implemented: manifest-driven projects, idempotent layer generation keyed on (engine, model, seed, prompt, bars), versioned alternates that never overwrite a keeper, a 32 kbps mono reference mix for conditioning, aligned stems, and one loudnorm pass with a loudness report. `dryrun` synthesises real audio via ffmpeg so the pipeline is testable without a GPU; `acestep` is a thin HTTP client that fails with an install hint rather than a traceback. 14 tests green.
 - 2026-11-16 — brief coverage: ACE-Step explicitly framed as dated baseline; added the Hermes plugin contract (manifest, daw_* tools, explicit project dir, readable failures, removable install) and raised the engine target to ACE-Step + a second local model + a hosted fallback behind one adapter interface.
+- 2026-11-16 — engine seam: `Engine` protocol (`name`, `capabilities`, `available() -> (bool, reason)`, `generate -> Artifact`), a registry with `engine: acestep|replicate|auto` selection, and a second real adapter — hosted Replicate (MusicGen by default, any slug by config). `auto` records the pick and the skipped reasons on the track; unavailable engines name the token or server that fixes them. ACE-Step's client path is unchanged; 28 tests green, including an end-to-end Replicate render against a stub HTTP API and an ACE-Step client test against a stub server.
