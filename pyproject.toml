@@ -14,6 +14,7 @@ senter-agent = "senter_agent.cli:main"
 [tool.pytest.ini_options]
 testpaths = ["tests", "bots"]
 addopts = "-q"
+markers = ["slow: renders real media via ffmpeg"]
 
 [tool.setuptools.packages.find]
 include = ["senter_agent*"]

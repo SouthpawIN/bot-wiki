@@ -215,6 +215,7 @@ def test_card_text_is_escaped_not_injected(tmp_path: Path) -> None:
     assert card.exists()
 
 
+@pytest.mark.slow
 def test_xfade_chain_reduces_total_by_the_overlap(tmp_path: Path) -> None:
     a = tmp_path / "a.mp4"; b = tmp_path / "b.mp4"
     synth(a, seconds=4, tone=220, colour="navy")
@@ -237,6 +238,7 @@ def test_group_by_topic_orders_the_strongest_topic_first() -> None:
     assert [s["rank"] for s in grouped[1][1]] == [0.4, 0.3], "ranked inside a topic"
 
 
+@pytest.mark.slow
 def test_assemble_organises_across_sessions(tmp_path: Path, session: Path) -> None:
     """Two 'sessions' with interleaved topics -> one video, topics grouped."""
     second = tmp_path / "session2.mp4"
@@ -268,6 +270,7 @@ def test_assemble_organises_across_sessions(tmp_path: Path, session: Path) -> No
     assert result["title"] in text
 
 
+@pytest.mark.slow
 def test_assemble_refuses_a_private_name(
     tmp_path: Path, session: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -279,6 +282,7 @@ def test_assemble_refuses_a_private_name(
         cutroom.assemble(sessions, tmp_path / "out", title="PrivateHandle rants about it")
 
 
+@pytest.mark.slow
 def test_cli_assemble(tmp_path: Path, session: Path) -> None:
     import json as _json
     payload = {"sessions": [{"source": str(session), "segments": [
