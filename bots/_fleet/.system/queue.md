@@ -9,7 +9,7 @@ one-line ask.
 
 - [ ] `ssi:private-profile` — the operator creates `$HERMES_PRIVATE/ssi/profile.md` from the published schema; until it exists Beacon stays generic and specific operation stays blocked | sources: bots/ssi/BOT.md, bots/ssi/.system/profiles/README.md
 - [ ] `youtube:long-session-parts` — prove a 3-hour OBS recording segments and renders in parts at 1080p60, dead air dropped at pause boundaries | sources: bots/youtube/BOT.md
-- [ ] `turbofit:index-pension` — purge retired deep-swe/agentic-pair rows and make every unmeasured configuration read "no measurements yet", suites N/4 | sources: bots/turbofit/BOT.md
+- [x] `turbofit:index-pension` — purge retired deep-swe/agentic-pair rows and make every unmeasured configuration read "no measurements yet", suites N/4 | sources: bots/turbofit/BOT.md | done: turbofit@78f63db — HERMES_INDEX_SUITES is the four Hermes suites, REQUIRED_BENCHMARKS aliases it, records 0, README reads "no measurements yet" and names the old 46.9 record as superseded
 - [ ] `turbofit:peer-discovery` — a second TurboFit machine's models must appear as health-checked peer routes without re-download | sources: bots/turbofit/BOT.md
 - [ ] `kart-racer:character-audit` — audit every roster entry against the canonical NRCU sheet: at work, no invented accessories, no restyle | sources: bots/kart-racer/BOT.md
 - [ ] `ai-daw:second-engine` — add one non-ACE-Step local adapter behind the same Hermes plugin contract and prove a render | sources: bots/ai-daw/BOT.md
