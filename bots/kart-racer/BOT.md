@@ -14,18 +14,36 @@ repos: [SouthpawIN/nrcu-kart, 123mikeyd/Nous_Research_Cinematic_Universe]
 **Mission.** A finished, playable kart racer in Unity built from the Nous Research
 Cinematic Universe cast: Mario Kart / Crash Team Racing feel, 35 characters from
 the NRCU bible, four cups, working items, and a build that runs on the operator's own
-hardware. Not a prototype video — a game with a main menu and a finish line.
+hardware. Not a prototype video and not a design doc — a game with a main menu
+and a finish line that he can launch and play.
+
+The cast comes from [123mikeyd/Nous_Research_Cinematic_Universe](https://github.com/123mikeyd/Nous_Research_Cinematic_Universe),
+a Smash-style project: characters, portraits, and profiles already exist there,
+and the game is a racing mode of that universe. The TurboFit character is a
+**likeness of the operator** — it is his avatar in the cast, not a new invention.
 
 The game is **Nous Racers** — a play on the company, Nous Research.
 
 **Interface.** `skill: kart-racer`.
 
+## Character rules (from the canonical sheet, not from imagination)
+
+- Every character is drawn from the canonical NRCU character sheet — the same
+  design, silhouette, and palette as the source art. No restyle for the kart game.
+- Depict characters **at work**, in their canonical role, not posing: the racing
+  frame is a functional action shot, not a marketing portrait.
+- **No invented accessories** — no new hats, logos, props, outfits, or vehicles
+  that the sheet does not carry.
+- If the sheet is ambiguous or missing a view, flag it and reuse the closest
+  canonical depiction; never fill the gap with a design decision.
+- TurboFit / Sovthpaw keeps the spelling in the game and is credited as sovthpaw.
+
 ## Mission, stated as outcomes
 
 - A Unity project that opens clean, builds to a runnable player, and drives well
-  with a keyboard and a gamepad.
+  with a keyboard and a gamepad — a build someone can play, not a spec.
 - Every NRCU character has a kart entry (weight class, stats, portrait) sourced
-  from `characters/*.md`, not invented.
+  from `characters/*.md`, not invented, and conforming to the character rules above.
 - 8 tracks across 4 cups, each with checkpoints, item boxes, and a lap timer.
 - Three items minimum with readable counterplay (boost, projectile, trap).
 - Turbo Fit / Sovthpaw is a playable character and is credited as sovthpaw.
@@ -83,6 +101,9 @@ The game is **Nous Racers** — a play on the company, Nous Research.
 - **No Nintendo assets, names, or music.** Ever. The reference is feel, not files.
 - **No character art without the artist's credit.** NRCU credits live in
   `CREDITS.md`; every portrait used must be listed in the game's credits screen.
+- **No restyle, no invented accessories.** Characters ship as the canonical sheet
+  draws them, at work. The TurboFit likeness is the operator's avatar as already
+  in the NRCU cast — not a redesign of him.
 - **No public build** until the operator plays it. Fan project or not, his name is on it.
 
 ## Needs from the operator
@@ -98,3 +119,4 @@ The game is **Nous Racers** — a play on the company, Nous Research.
 - 2026-11-07 — bot seeded; 35 NRCU characters enumerated (incl. Turbo Fit / Sovthpaw); drift-first plan set.
 - 2026-11-08 — Unity project created at SouthpawIN/nrcu-kart: seven C# scripts covering driving, drift, checkpoints, respawn, the race loop, standings and items, plus the generated 35-character roster. Not yet compiled — this container has no Unity editor, so the first Play-mode test is the operator's.
 - 2026-11-08 — roster generator built and run for real: 35 characters, no unresolved profiles, `validate` clean. Turbo Fit / Sovthpaw is in the cast with the spelling preserved. Flagged for the operator: that entry came out `light` because the profile contains the word "small"; it is unlocked, so one edit to `stats`/`weight` plus `"locked": true` pins it.
+- 2026-11-16 — brief coverage: named the NRCU source project and the TurboFit-likeness rule; added character constraints from the canonical sheet (at work, not posing, no invented accessories, no restyle) and stated the deliverable is a playable build, not a design doc.

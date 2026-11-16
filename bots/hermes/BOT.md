@@ -12,19 +12,47 @@ repos: [NousResearch/hermes-agent]
 # Mesh — Hermes, one instance everywhere
 
 **Mission.** One Hermes, many screens. The omarchy desktop, the MacBook, the
-Surface, and the phone all talk to the same instance — same chats, same memory,
-same bots, same skills. Attach, don't copy: no second brain, no drift.
+Surface, and the phone all talk to the same instance — same chats, same bots,
+same skills. Attach, don't copy: no second brain, no drift.
+
+The target is a **single Hermes served as a web app over Tailscale**: every
+device opens the same interface at the same tailnet URL, with the same chat
+history and the same nine bots. That replaces "each machine has its own Hermes
+and its own state" with one authority and thin clients.
 
 **Interface.** `skill: hermes` (+ the `hermes-agent` skill for command truth).
 
 ## Mission, stated as outcomes
 
 - The dashboard/web app is reachable on the tailnet at a stable HTTPS hostname,
-  behind auth, from every device.
+  behind auth, from every device: omarchy desktop, MacBook, Surface, phone.
 - Each device reaches it with the native surface it has: desktop app on omarchy
   and MacBook, browser/app on the Surface and phone.
 - Sessions, bots, memory, and skills are one store — not four.
+- Every device shows the same interface and the same conversations; a chat
+  started on the phone continues on the desktop.
 - Any device can be offline for a week and lose nothing but its local cache.
+- The build uses **built-in Hermes mechanisms** — `hermes dashboard`,
+  `tailscale serve`, profiles, the standard auth path — rather than custom
+  proxies, rsync of `~/.hermes`, or a hand-rolled sync daemon.
+- The actual configuration steps are written down and reproducible: serve,
+  tailnet access, profile sharing.
+
+## Configuration record (the steps, not the theory)
+
+These are the three procedures that have to be recorded and kept current in
+`bots/hermes/devices/_mesh.md`; each is a built-in mechanism, not glue:
+
+1. **Serve** — `hermes dashboard --host 127.0.0.1 --port 9119`, then
+   `tailscale serve --bg 9119` (or `--https=8443 9119`) so the app is HTTPS on
+   the tailnet. No custom reverse proxy, no public bind.
+2. **Tailnet access** — the device runs `tailscale up`, joins the same tailnet,
+   and opens the MagicDNS name. Access control is tailnet ACLs plus Hermes auth,
+   not an IP allowlist in front of the app.
+3. **Profile sharing** — bots are Hermes profiles on the authority; a client sees
+   them because it is talking to the authority, not because the profile was
+   copied. `tools/publish_profiles.py` renders `bots/<slug>/BOT.md` into the
+   authority's `~/.hermes/profiles/<slug>/SOUL.md`.
 
 ## Owns
 
@@ -68,6 +96,11 @@ same bots, same skills. Attach, don't copy: no second brain, no drift.
 ## Hold points
 
 - Never expose the dashboard beyond the tailnet, and never with `--insecure`.
+- Never prefer a custom proxy, file-sync daemon, or copied `~/.hermes` over the
+  built-in `hermes dashboard` / `tailscale serve` / profile path. If a built-in
+  step is missing, record the gap instead of inventing glue.
+- Never leave the configuration record stale: a serve/auth/profile change that
+  is not in `bots/hermes/devices/_mesh.md` did not happen.
 - Never put a secret in `config.yaml`; `.env` only.
 - Never let a device become a second authority — that is how memories fork.
 
@@ -91,3 +124,4 @@ same bots, same skills. Attach, don't copy: no second brain, no drift.
 - 2026-11-14 — mesh health check: dashboard 302 on `:9119` (still bound `0.0.0.0`, not loopback-only); tailscaled alive with the keeper loop up (pid 1016, started 11-13) and serve config persisted; OAuth login 302 → `/auth/login?provider=nous` through SOCKS on `:8443`; disk 40% used, 57 G free. Devices: omarchy online, MacBook offline 10 m (laptop), surface-duo-2 1 d, android-s10 4 d. **Resolved (day 2 of the finding):** control-plane sync is back — `tailscale status` shows no coordination-server warning and `keeper.log` shows active DERP conns (derp-9 → derp-2). **Still open, day 5:** 443 serve proxy → `127.0.0.1:8788` (connection refused → 502 on the ts.net root) while 8091 (TurboFit gateway) answers 404 on loopback as expected. Serve config left untouched per the loop's hold point.
 - 2026-11-15 — mesh health check: dashboard 302 on `:9119` (still bound `0.0.0.0`, not loopback-only); tailscaled alive since 11-13 20:14 with the keeper loop up (pid 1016), no restart needed this run; serve config persisted with both proxies; OAuth chain verified end to end through SOCKS on `:8443` — 302 → `/auth/login?provider=nous` → 302 to `portal.nousresearch.com/oauth/authorize` (portal 200); disk 42% used, 55 G free. Devices: omarchy idle (online), MacBook offline 10 m (laptop, not a failure), surface-duo-2 3 h, android-s10 5 d. **Still open, day 6:** 443 serve proxy → `127.0.0.1:8788` (connection refused → 502 on the ts.net root) while 8091 (TurboFit gateway) is alive on loopback. Serve config left untouched per the loop's hold point. Note: gateway `/health` now returns 503 (`main: down`, `aux: down`, `backend: none`) — no engine loaded, consistent with an idle gateway, not treated as a fault.
 - 2026-11-16 — mesh health check: dashboard 302 on `:9119` (still bound `0.0.0.0`, not loopback-only); tailscaled alive since 11-13 20:14 (pid 1025) with the keeper loop (pid 1016) up, no restart needed this run; serve config persisted with both proxies; OAuth login 302 → `/auth/login?provider=nous` through SOCKS on `:8443`; disk 48% used, 49 G free. Devices: omarchy online, MacBook offline 10 m (laptop, not a failure), surface-duo-2 1 d, android-s10 6 d (last online 11-08 — phone-side absence, not a mesh fault). **Still open, day 7:** 443 serve proxy → `127.0.0.1:8788` (connection refused → 502 on the ts.net root) while 8091 (TurboFit gateway) is alive on loopback (`/health` still 503, no engine loaded — idle, not a fault). Serve config left untouched per the loop's hold point.
+- 2026-11-16 — brief coverage: stated the single-instance-over-Tailscale target (desktop, MacBook, Surface, phone with identical interface and chats) and added a Configuration record for the three real steps — serve, tailnet access, profile sharing. Hold points now forbid custom proxy/sync glue over built-in `hermes dashboard` / `tailscale serve` / profiles, and require the record to stay current.

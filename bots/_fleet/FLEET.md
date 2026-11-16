@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-15
+updated: 2026-11-16
 tags: [fleet, index]
 ---
 
@@ -21,13 +21,13 @@ workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
 |---|---|---|---|---|---|
 | [[bots/bot-wiki/BOT\|bot-wiki]] | Klerik | the method itself | live | 1 | — |
 | [[bots/hermes/BOT\|hermes]] | Mesh | one Hermes across devices | live | 1 | device sign-in; phone OS; whether the MacBook keeps a local TurboFit node role |
-| [[bots/turbofit/BOT\|turbofit]] | TurboSouth | TurboFit support + fit matrix | seeding | 0 | Darwin 125.3 GiB download decision; Arete on the unified ladder; an 8 GB card for the smoke test |
+| [[bots/turbofit/BOT\|turbofit]] | TurboSouth | TurboFit local inference + fit matrix | seeding | 0 | Darwin 125.3 GiB download decision; Arete on the unified ladder; an 8 GB card for the smoke test |
 | [[bots/pocketshop/BOT\|pocketshop]] | Binder | MTG card flipping | seeding | 0 | printer IP; eBay token; fee + restock limits |
 | [[bots/youtube/BOT\|youtube]] | Cutroom | Discord rants → YouTube | seeding | 0 | OBS output path; a 30-minute sample; channel identity |
 | [[bots/ai-daw/BOT\|ai-daw]] | Riff | music generation plugin | seeding | 0 | GPU host for ACE-Step; plugin vs existing DAW UI |
 | [[bots/anser/BOT\|anser]] | Anser | mod answer bot | seeding | 0 | X read credentials; channel list + mention policy |
 | [[bots/kart-racer/BOT\|kart-racer]] | Apex | **Nous Racers** — Unity kart racer | seeding | 0 | repo visibility; Unity version; a controller to tune deadzones |
-| [[bots/ssi/BOT\|ssi]] | Beacon | TX benefits paperwork | blocked | 0 | program list + documents; children's initials; any active denial |
+| [[bots/ssi/BOT\|ssi]] | Beacon | benefits paperwork (two-layer: public template + private profile) | blocked | 0 | private profile not yet created; documents in hand; any active denial |
 
 ## What is built, not just specified
 
@@ -52,8 +52,16 @@ workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
   them, so the procedure exists and is unreachable from the bot that owns it.
 - `ssi`: the program inventory the fleet queue still lists as missing to-do work
   is already written into `bots/ssi/BOT.md` (six programs, first form each,
-  2026-11-07). What is missing is per-member status, not the list — the
-  queue row was reworded on 2026-11-13 rather than left to read as unstarted.
+  2026-11-07). The bot is now explicitly two-layer — public template plus
+  `$HERMES_PRIVATE/ssi/profile.md` — so what still blocks specific operation is
+  the operator creating that private profile, not missing writing.
+- **Private-profile pattern.** Where a bot needs household/account/device facts,
+  the repo carries only the shape and the loader contract; the values live at
+  `$HERMES_PRIVATE/<bot>/` (defaulting to `~/.hermes/private/<bot>/`) and are
+  never committed. `ssi` is the reference implementation
+  (`bots/ssi/.system/profiles/README.md`); `pocketshop` applies it to seller
+  identity and tokens, `hermes` to device names. A bot that hardcodes such a
+  value in a tracked file is drifted, whatever its tests say.
 - `hermes`: the 443 serve proxy points at `127.0.0.1:8788` (nothing listening),
   not the documented `8091`; `:9119` binds `0.0.0.0`. Recorded in its own log,
   unfixed.

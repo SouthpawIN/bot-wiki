@@ -22,7 +22,7 @@ a 40-page notice survivable.
 python bots/ssi/scripts/casefile.py init <initials>
 python bots/ssi/scripts/casefile.py intake <initials> scan.pdf \
     --source ssa --doctype notice --date 2026-10-02 \
-    --case-no TX-999 --ask "Return form 827" --due 2026-11-20
+    --case-no CASE-999 --ask "Return form 827" --due 2026-11-20
 python bots/ssi/scripts/casefile.py deadlines <initials> --days 10
 python bots/ssi/scripts/casefile.py review <initials> --form SSA-827 --facts facts.json
 python bots/ssi/scripts/casefile.py fill blank-form.pdf facts.json filled.pdf
@@ -36,15 +36,15 @@ will not put an unverified number on a benefits form.
 
 1. **Scan** 300 dpi, grayscale, PDF with a text layer (OCR at scan time if the
    scanner supports it; otherwise `ocrmypdf --skip-text in.pdf out.pdf`).
-2. **Name** immediately: `YYYY-MM-DD_<ssa|hhsc|school|medical>_<doctype>_<initials>.pdf`.
+2. **Name** immediately: `YYYY-MM-DD_<agency>_<doctype>_<beneficiary-id>.pdf`.
    Unknown date → use the postmark date, never today's date.
-3. **Extract the ask** into `cases/<initials>/intake.md`:
+3. **Extract the ask** into `$HERMES_PRIVATE/ssi/cases/<beneficiary-id>/intake.md`:
    - Who sent it (agency, office, address)
    - What they want (documents, interview, form, payment)
    - Due date, verbatim
    - Consequence of missing it, verbatim
    - Any case/reference number
-4. **Update two tables**: `_programs.md` (status changed?) and `_deadlines.md`
+4. **Update two tables**: `$HERMES_PRIVATE/ssi/programs.md` (status changed?) and `$HERMES_PRIVATE/ssi/deadlines.md`
    (new dated obligation). If neither changes, write `no action` in the timeline.
 5. **Flag urgency**: hearing notice, denial with appeal rights, or a 10-day
    deadline → top of the deadline table and an immediate injection line.

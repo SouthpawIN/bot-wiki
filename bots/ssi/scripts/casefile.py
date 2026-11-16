@@ -11,25 +11,33 @@ Safety contract, enforced in code:
   * Originals are never modified or moved; intake copies into the case folder.
 
 Commands:
-    init      <initials>                       create the case folder
-    intake    <initials> <file> --source --doctype [--date --due --case-no --ask]
-    deadlines <initials> [--days 10]           what is due, what is overdue
-    review    <initials> --form NAME --facts facts.json [--send-by DATE --method MAIL]
+    init      <beneficiary-id>                create the case folder
+    intake    <beneficiary-id> <file> --source --doctype [--date --due --case-no --ask]
+    deadlines <beneficiary-id> [--days 10]           what is due, what is overdue
+    review    <beneficiary-id> --form NAME --facts facts.json [--send-by DATE --method MAIL]
     fill      <form.pdf> <facts.json> <out.pdf>  fill AcroForm fields, list CONFIRMs
-    log       <initials> <text>                append to the timeline
+    log       <beneficiary-id> <text>                append to the timeline
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-CASE_ROOT = Path("cases")
-SOURCES = ("ssa", "hhsc", "school", "medical", "court", "other")
+def _case_root() -> Path:
+    """Personal data never lives in the repo: $HERMES_PRIVATE/ssi/cases."""
+    base = os.environ.get("HERMES_PRIVATE")
+    home = Path(base) if base else Path.home() / ".hermes" / "private"
+    return home / "ssi" / "cases"
+
+
+CASE_ROOT = _case_root()
+SOURCES = ("ssa", "state", "school", "medical", "court", "other")
 
 
 def _today() -> date:

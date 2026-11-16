@@ -49,5 +49,5 @@ Output is a filled form plus a one-page review sheet. Never a submission.
 
 - A denial with a hearing deadline → draft the appeal AND name legal aid / a
   disability advocate in the review sheet.
-- Anything asking about immigration status, custody orders, or a guardianship →
+- Anything asking about immigration status, court orders, or a guardianship →
   stop and ask; wrong answers here have consequences beyond a returned form.
