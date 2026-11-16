@@ -12,22 +12,43 @@ repos: [SouthpawIN/ACE-Step-DAW]
 # Riff — AI DAW
 
 **Mission.** A Hermes plugin that drives a DAW from conversation: generate
-layers, arrange them, render stems and a mix, without leaving the agent. ACE-Step
-is the baseline engine, not the ceiling — the plugin's value is a model-agnostic
-adapter layer so a better music model is a new adapter, not a rewrite.
+layers, arrange them, render stems and a mix, without leaving the agent. It is
+built on [SouthpawIN/ACE-Step-DAW](https://github.com/SouthpawIN/ACE-Step-DAW),
+but ACE-Step is dated — it is the baseline engine, not the ceiling. The plugin's
+value is a model-agnostic adapter layer so a better music model is a new adapter,
+not a rewrite, and the whole thing stays a **first-class Hermes plugin**: the
+contract Hermes expects (manifest, tool naming, permissions, no hidden state)
+is not negotiable for any engine behind it.
 
 **Interface.** `skill: ai-daw` — plus the plugin's tools once installed
 (`daw_*` under `~/.hermes/plugins/ai-daw/`).
+
+## Plugin contract (compatible with Hermes plugins)
+
+- `plugin.yaml` declares name, version, entrypoint, and the tools it exposes;
+  no side effects at import time.
+- Tools are `daw_*`, take plain JSON-serialisable arguments, and return text or a
+  path — never a live object the agent cannot serialise.
+- Every tool names its project directory explicitly; no global "current project"
+  hidden in process state.
+- Failures are returned as readable errors with a remedy, not tracebacks, and a
+  missing engine produces an install hint rather than a crash.
+- The plugin can be removed by deleting its directory: projects live in the
+  user's folder, not inside the plugin install.
+- New engines conform to the same adapter base — if the Hermes contract and an
+  engine's API disagree, the contract wins and the adapter absorbs the difference.
 
 ## Mission, stated as outcomes
 
 - `hermes` can list, generate, regenerate, mute, and render tracks inside a
   project directory, with every action reversible.
-- At least two engines work behind one interface: ACE-Step 1.5 (local) and one
-  hosted fallback, so a dead GPU is an inconvenience, not a work stoppage.
+- At least three engines work behind one interface: ACE-Step 1.5, a second local
+  model, and one hosted fallback — so a dated engine or a dead GPU is an
+  inconvenience, not a work stoppage.
 - The LEGO pipeline survives: each generated layer conditions on the mix so far.
 - A project is a folder of plain files (manifest + wavs + MIDI), so nothing is
   trapped in the plugin.
+- The plugin installs and uninstalls cleanly under a stock Hermes plugin loader.
 
 ## Owns
 
@@ -42,8 +63,9 @@ adapter layer so a better music model is a new adapter, not a rewrite.
 
 ## Operating loop
 
-1. **Project** — create `project.json` from a prompt: bpm, key, section map
-   (intro/verse/chorus/bridge/outro with bar counts).
+1. **Project** — turn the conversation into `project.json`: bpm, key, section
+   map (intro/verse/chorus/bridge/outro with bar counts). Ambiguity is asked
+   about, not silently defaulted into the manifest.
 2. **Layer** — generate one instrument at a time, conditioned on the current mix
    (drums → bass → harmony → lead → vocals). Each call records engine, model,
    seed, and prompt in the manifest.
@@ -91,3 +113,4 @@ adapter layer so a better music model is a new adapter, not a rewrite.
 
 - 2026-11-07 — bot seeded; adapter interface specified; ACE-Step 1.5 registered as baseline engine.
 - 2026-11-08 — plugin implemented: manifest-driven projects, idempotent layer generation keyed on (engine, model, seed, prompt, bars), versioned alternates that never overwrite a keeper, a 32 kbps mono reference mix for conditioning, aligned stems, and one loudnorm pass with a loudness report. `dryrun` synthesises real audio via ffmpeg so the pipeline is testable without a GPU; `acestep` is a thin HTTP client that fails with an install hint rather than a traceback. 14 tests green.
+- 2026-11-16 — brief coverage: ACE-Step explicitly framed as dated baseline; added the Hermes plugin contract (manifest, daw_* tools, explicit project dir, readable failures, removable install) and raised the engine target to ACE-Step + a second local model + a hosted fallback behind one adapter interface.

@@ -175,9 +175,12 @@ def test_package_writes_upload_md(tmp_path: Path) -> None:
     assert "sovthpaw" in text
 
 
-def test_package_refuses_a_private_name(tmp_path: Path) -> None:
+def test_package_refuses_a_private_name(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # The forbidden list is env-driven in production; pin it here so the test
+    # does not depend on an ambient PRIVATE_NAMES value.
+    monkeypatch.setattr(cutroom, "FORBIDDEN_PUBLIC_NAMES", ("PrivateHandle",))
     with pytest.raises(ValueError, match="must not contain"):
-        cutroom.package(SEGMENTS, tmp_path / "out", title="the operator explains local models")
+        cutroom.package(SEGMENTS, tmp_path / "out", title="PrivateHandle explains local models")
 
 
 def test_cli_package_writes_the_sheet(tmp_path: Path) -> None:
@@ -265,12 +268,15 @@ def test_assemble_organises_across_sessions(tmp_path: Path, session: Path) -> No
     assert result["title"] in text
 
 
-def test_assemble_refuses_a_private_name(tmp_path: Path, session: Path) -> None:
+def test_assemble_refuses_a_private_name(
+    tmp_path: Path, session: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(cutroom, "FORBIDDEN_PUBLIC_NAMES", ("PrivateHandle",))
     sessions = [{"source": str(session), "segments": [
         {"title": "x", "topic": "x", "rank": 0.5, "start": 0.0, "end": 2.0,
          "source": str(session)}]}]
     with pytest.raises(ValueError, match="must not contain"):
-        cutroom.assemble(sessions, tmp_path / "out", title="the operator rants about it")
+        cutroom.assemble(sessions, tmp_path / "out", title="PrivateHandle rants about it")
 
 
 def test_cli_assemble(tmp_path: Path, session: Path) -> None:

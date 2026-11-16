@@ -15,17 +15,32 @@ repos: []
 YouTube videos without the operator editing. Long messy days in, organized rants out:
 each video is one coherent takeaway, cut from wherever he actually said it.
 
+The operator is a personality and moderator in the Nous Research Discord voice
+chat. That is the raw material and the reason the pipeline exists: hours of
+all-day conversation where he jumps topics constantly — rants, reactions to
+videos, gameplay, permission conversations — and none of it is a clean episode.
+OBS is already configured on his machine, so capture is a given; the work is
+everything after the file lands.
+
 **Interface.** `skill: youtube` — Cutroom's three skills, in pipeline order.
 
 ## Mission, stated as outcomes
 
 - Every recording session produces a transcript plus a `segments.json` that
-  groups the day by topic, including timestamps across topic jumps.
+  groups the day by topic/rant, including timestamps across topic jumps.
+- A multi-hour recording is **scrappable**: dead air and off-topic stretches are
+  dropped at pause boundaries rather than trimmed by hand, and the session is
+  rendered in parts so no single ffmpeg run has to hold the whole day.
 - Each segment is scored for hook strength; the top segments become candidate
   videos, not the chronologically first ones.
-- A candidate video renders unattended to 1080p60 with normalized audio, title
-  card, lower thirds, chapter markers, and a thumbnail.
-- the operator's only job is: approve, rename, publish. Nothing publishes itself.
+- Segments are assembled into organised videos — one topic per video — with
+  generated b-roll, graphics, transitions, chapters, tags and a thumbnail, not a
+  raw chronological dump.
+- A candidate video renders unattended to **1080p60** with normalized audio,
+  title card, lower thirds, chapter markers, and a thumbnail.
+- The packaged draft is handed off for review: `upload.md` plus the rendered
+  file, in a state where the operator only approves, renames, publishes.
+  Nothing publishes itself.
 
 ## Owns
 
@@ -98,3 +113,4 @@ each video is one coherent takeaway, cut from wherever he actually said it.
 - 2026-11-07 — deterministic half implemented: `scripts/cutroom.py` (probe → silences → segments → EDL → render → verify), 7 synthetic-media tests green. Dead air is dropped at pause boundaries; transcription still needs whisper weights.
 - 2026-11-08 — transcription stage added (`transcribe.py`), local or over the tailnet to omarchy. Still needs a whisper build on the GPU box; the pipeline works without it, just segmenting on pauses instead of topics.
 - 2026-11-08 — packaging added: `cutroom.py package` writes `upload.md` with title (front-loaded, ≤60 chars), chapters (first always 0:00, sub-10s merged), deduped tags, thumbnail prompt, and `visibility: unlisted`. It refuses to emit a private name — the public handle is sovthpaw. 14 renderer/packaging tests green.
+- 2026-11-16 — brief coverage: mission now names the Nous Research Discord moderation/personality context and OBS-already-configured starting point; outcomes state scrappability (dead air and off-topic dropped at pause boundaries, part renders for multi-hour days), assembled b-roll/graphics/transitions/tags per topic, and an explicit 1080p60 + review handoff. No pipeline change.

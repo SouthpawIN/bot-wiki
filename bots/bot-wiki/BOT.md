@@ -14,7 +14,13 @@ repos: [SouthpawIN/bot-wiki]
 **Mission.** Keep nine bots coherent. Klerik is the method: it decides what a
 bot is, writes the schema, watches every bot's queue, materializes missing
 skills and loops, and reports drift. It is also the proof of the method — the
-wiki that builds the wiki.
+wiki that builds the wiki, and the way every other project in this fleet is run.
+
+The structure is **bot-first and it does not bend**: each topic gets its own
+bot, that bot grows its own skills for its own work, and its recurring work is
+handled the same way — as a loop owned by that bot, declared in its own BOT.md.
+There is no central pile of skills, no shared "misc" bot, and no topic run from
+inside another topic's bot.
 
 **Interface.** `skill: bot-wiki` — loads `bots/bot-wiki/skills/*` and then the
 target bot's BOT.md before touching anything.
@@ -26,6 +32,10 @@ target bot's BOT.md before touching anything.
 - Every live loop names its skill, its schedule, and its stop condition.
 - No bot sits in `blocked` without a one-line ask in `Needs from the operator`.
 - The fleet index (`bots/_fleet/FLEET.md`) matches reality after every run.
+- The fleet queue is current: every cross-bot follow-up is filed with an owner
+  and a link, and nothing sits claimed without an artifact.
+- `python3 scripts/verify_bots.py` reports `problems=0` and
+  `python3 tools/publish_skills.py` has rendered every bot as `bot-<slug>`.
 
 ## Owns
 
@@ -36,15 +46,22 @@ target bot's BOT.md before touching anything.
 
 ## Operating loop
 
-1. Read `bots/_fleet/FLEET.md` and every `bots/*/.system/queue.md`.
+1. Read `bots/_fleet/FLEET.md` and every `bots/*/.system/queue.md`, plus the
+   fleet queue at `bots/_fleet/.system/queue.md`.
 2. Reconcile: does every row of `FLEET.md` match the BOT.md it points at
-   (status, live loop count, blocker)? Fix the index, not the bot.
-3. Claim one queue item per run (`[~]`), oldest first. Never more than one —
+   (status, live loop count, blocker, declared skills)? Fix the index, not the bot.
+3. Keep the queue honest: every cross-bot follow-up gets a row with a target bot
+   and a one-line ask; close rows whose artifact now exists; never leave a `[~]`
+   claim without a written artifact behind it.
+4. Claim one queue item per run (`[~]`), oldest first. Never more than one —
    a factory that does five things does none of them verifiably.
-4. Produce the artifact: a BOT.md section, a SKILL.md, or a loop spec.
-5. Validate: `python -m senter_agent . --json` must parse; `pytest -q` must pass.
-6. Mark `[x]`, append one line to the bot's `## Log`, write an injection.
-7. If a bot has been `blocked` for 14 days with no human reply, downgrade it to
+5. Produce the artifact: a BOT.md section, a SKILL.md, or a loop spec.
+6. Validate: `python3 scripts/verify_bots.py` → `problems=0`;
+   `python -m senter_agent . --json` must parse; `pytest -q` must pass.
+7. Publish: `python3 tools/publish_skills.py`, so `bot-<slug>` matches the BOT.md
+   it came from. A published skill older than its BOT.md is drift.
+8. Mark `[x]`, append one line to the bot's `## Log`, write an injection.
+9. If a bot has been `blocked` for 14 days with no human reply, downgrade it to
    `paused` and say so once. Do not nag every run.
 
 ## Skills
@@ -92,7 +109,7 @@ as `bot-<slug>`. Run it after any BOT.md change; the published copy is disposabl
 
 - 2026-11-15 (06:00 reconcile) — both clones clean at `70cf5c2` (only untracked `topics/`), no repair. Index re-verified from all nine BOT.md: nine statuses and live-loop counts still agree with reality (2 live at 1, 6 seeding at 0, ssi blocked at 0, 12 declared loops all on disk, nothing orphaned), every `Blocked on` cell still matches the hold its own Needs names, and ssi's Needs is still non-empty so no demotion to `paused`. Claimed turbofit's oldest unblocked item, `benchmark-rung`, and wrote `bots/turbofit/skills/benchmark-rung/SKILL.md`: the campaign measures and the skill only transcribes — name the cell anchor before the number, treat `waiting_download` / `waiting_memory` / `waiting_runtime` as prerequisites rather than failures, admit only a bundle that satisfies all nine success conditions and binds the hardware fingerprint plus raw-result SHA-256, write a `measured` block whose `cell`, `evidence_sha256`, `hardware`, `context` and tok/s agree with the rung's `note`, one rung one cell with the newer measurement replacing the older (never best-of), check only that anchor in the same commit, and re-run the gate arithmetic (`coverage n/1165, waived n, measured-rung mismatches 0`). Refusals are explicit: no bundle means no `measured` field, a vendor-chart or other-machine number is refused, and a `waiting_*` row is never measured by hand to unblock a release. Validator 9 bots / 34 skills / 12 loops / 0 problems, 139 tests green. Filed turbofit's BOT.md declaration as a fleet `[BOTS]` item (only TurboSouth may declare it) and added the skill to Known drift. Observed but not acted on: hermes' queue still lists `mesh-health` as "arm after the first serve is verified" although its BOT.md and a real 06:30 cron job both say live — a stale queue row, next run's candidate.
 - 2026-11-14 (06:00 reconcile) — repo clean this run in both clones (`d292fe9`, no zero-byte objects), so no repair needed. Index re-verified against all nine BOT.md: nine statuses and live-loop counts still agree (2 live at 1, 6 seeding at 0, ssi blocked at 0) and every `Blocked on` cell still matches the hold its own Needs names; only the `updated:` date and the proof line changed. Claimed turbofit's `fold benchmark-campaign.md into the release gate as a coverage check` and rewrote `bots/turbofit/loops/release-gate.md` as two stages: the contract suite, then campaign coverage — 1,165 cells counted by marker with duplicates a FAIL, a `measured` rung must have a matching `- [x]` cell keyed on the cell anchor, declared context capped at the largest checked cell, coverage monotonic across tags via `git show <prev-tag>`, unservable cells waived to `- [-]` plus a `## Waivers` row, and an always-printed `coverage n/1165 (+delta), waived n, mismatches n` line. That mechanises the hold point "never claim a tok/s number not measured on that machine"; the 0/1,165 backlog is deliberately not a failure, and the gate reads the ledger without editing it. Validator 9 bots / 33 skills / 12 loops / 0 problems, 139 tests green (full `pytest -q`, exit 0).
-- 2026-11-13 (06:00 reconcile) — `~/.hermes/wiki` was corrupt again at start: five zero-byte loose objects, `HEAD` unreadable, so the cron workdir had no working tree. Repaired with the documented steps (delete only 0-byte objects, `git fetch`, `git reset --mixed origin/main`, `git checkout -- .`); no content lost, `43ea9aa` restored. Re-verified the index: nine statuses, nine live-loop counts and every `Blocked on` cell still agree with the BOT.md each points at, and both `live` loops are backed by real cron jobs (`fleet-reconcile` 0 6, `mesh-health` 30 6) rather than only declared state — that check is now written into the index. Claimed pocketshop's `coordinate scanner schedule with ssi`: the arbitration was already one table in `wifi-scanner-control` (cards 07:00–19:00, documents 19:00–07:00, `deadline-watch` outranks, a held batch is never interrupted) but the contract had no rule for a job that dies holding the sheet — a free `flock` with a leftover `data/scanner.owner` now means the previous holder was killed, so the next bot re-scans from the last good page and ledgers `crash` instead of appending to a half batch; owner lines carry the pid that makes this diagnosable. Reworded the stale fleet `ssi` row: the six-program inventory exists in its BOT.md since 2026-11-07, so what blocks Beacon is the operator's per-child status, not missing writing. Validator 9 bots / 33 skills / 12 loops / 0 problems, 139 tests green.
+- 2026-11-13 (06:00 reconcile) — `~/.hermes/wiki` was corrupt again at start: five zero-byte loose objects, `HEAD` unreadable, so the cron workdir had no working tree. Repaired with the documented steps (delete only 0-byte objects, `git fetch`, `git reset --mixed origin/main`, `git checkout -- .`); no content lost, `43ea9aa` restored. Re-verified the index: nine statuses, nine live-loop counts and every `Blocked on` cell still agree with the BOT.md each points at, and both `live` loops are backed by real cron jobs (`fleet-reconcile` 0 6, `mesh-health` 30 6) rather than only declared state — that check is now written into the index. Claimed pocketshop's `coordinate scanner schedule with ssi`: the arbitration was already one table in `wifi-scanner-control` (cards 07:00–19:00, documents 19:00–07:00, `deadline-watch` outranks, a held batch is never interrupted) but the contract had no rule for a job that dies holding the sheet — a free `flock` with a leftover `data/scanner.owner` now means the previous holder was killed, so the next bot re-scans from the last good page and ledgers `crash` instead of appending to a half batch; owner lines carry the pid that makes this diagnosable. Reworded the stale fleet `ssi` row: the six-program inventory exists in its BOT.md since 2026-11-07, so what blocks Beacon is the operator's per-beneficiary status, not missing writing. Validator 9 bots / 33 skills / 12 loops / 0 problems, 139 tests green.
 - 2026-11-12 (06:00 reconcile) — index re-verified from every BOT.md: nine statuses and live-loop counts agree (2 live, 7 seeding/blocked at 0), every declared loop is on disk and nothing orphaned; two `Blocked on` cells reworded to the holds their own Needs name (hermes gained the MacBook node-role question, turbofit's Darwin hold now says 125.3 GiB and Arete's ladder row). Claimed the fleet `[SKILLS] wifi-scanner-control` item and wrote the runtime contract both Binder and Beacon call — `flock -n` on one flatbed, presets read from `data/scanner.json`, day/night windows with `deadline-watch` overriding, black-page and 0-byte gates before release — setup stays in `pocketshop/printer-onboarding`. Added the real drift found while reconciling: `bots/_fleet/skills/*` is not installed by `publish_skills.py`, and `.system/` is gitignored so `~/.hermes/wiki` carried no queue at all. Validator 9 bots / 33 skills / 12 loops / 0 problems, 139 tests green.
 - 2026-11-11 (06:00 reconcile) — clones were corrupt at start (an interrupted run left 22+14 zero-byte git objects, `HEAD` unreadable, five files — FLEET.md, both bot-wiki pages, ai-daw's stem-separation — truncated to 0 bytes): deleted only the zero-byte objects, `git fetch` restored them, `git checkout -- .` rebuilt the tree, no content lost. Re-verified the index (9 BOT.md, statuses and live-loop counts agree; every `Blocked on` cell reworded to the hold its own Needs-from-the operator names; prose corrected: eight topic bots + Klerik = nine). Claimed anser's `faq-distill`: repeated questions become a cited draft in `data/faq/draft.md`, stale sources and numeric conflicts flagged, unanswerable repeats escalated — proven against 8 synthetic answer files. Filed its BOT.md declaration as a fleet item; closed the stale `arm fleet-reconcile` fleet row.
 - 2026-11-10 (06:00 reconcile) — index re-verified against all nine BOT.md files: status, declared skills, loops and live-loop counts agree, 0 mismatches; fixed one stale proof cell (youtube 14 → 27 tests) and closed kart-racer's `create nrcu-kart` item (repo live since 2026-11-08). Claimed ai-daw's `stem-separation` and wrote the Demucs skill — native stems always win, `stems_quality: separated` recorded in `project.json`, a −60 dBFS reconstruction null as the gate, `--two-stems=vocals` as the only CPU path. Filed the BOT.md declaration as a fleet item (31 skills, 12 loops, validator 0 problems, 139 tests green in 24 min).
@@ -104,3 +121,4 @@ as `bot-<slug>`. Run it after any BOT.md change; the published copy is disposabl
 - 2026-11-08 — fleet-wide build pass: every one of the nine bots now has a working artifact behind it, not just a spec (see `FLEET.md` → "What is built"). Two live loops armed: `fleet-reconcile` 06:00 and `mesh-health` 06:30. Wiki suite: 126 tests, validator clean.
 - 2026-11-07 — first reconcile run: statuses and live-loop counts matched; fixed two stale `Blocked on` cells in `FLEET.md` (kart-racer, pocketshop); no queue items existed to claim.
 - 2026-11-07 — fleet rebuilt bot-first; nine bots seeded; schema published; live loop armed.
+- 2026-11-16 — brief coverage: bot-first structure stated as a rule (one bot per topic, own skills, own loops); operating loop now includes queue maintenance, `verify_bots.py` as a gate, and `publish_skills.py` as a required step; mission says plainly that this bot is how every other project is run. Fixed the fleet index's SSI row and added the private-profile pattern to Known drift.
