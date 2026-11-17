@@ -23,6 +23,24 @@ actual case file — read from his private profile, never from this repo.
 
 **Interface.** `skill: ssi`.
 
+## Intake: phone photos, not just the flatbed
+
+Scanning is a convenience, not a requirement. When the printer/scanner is
+unavailable, notices and forms are photographed and ingested the same way:
+
+- **Inbox:** `$HERMES_PRIVATE/ssi/inbox/` — any image dropped there is picked up
+  by the intake step and filed into the right case after classification.
+- **Classification:** the doc type (notice, form, ID, medical record, proof of
+  income) and the beneficiary come from the page itself. Unreadable or ambiguous
+  pages go to `needs-better-photo` with a specific reason — never filed blind.
+- **Extraction:** names, dates, amounts, case numbers and deadlines are quoted
+  from the page with the page reference attached, so every figure in a draft
+  form traces back to a photographed source.
+- **Same safety rules:** nothing is submitted; `fill` writes a NEW pdf;
+  unsourced fields stay blank and are reported `[[CONFIRM: field]]`.
+- **Provenance:** each filed document records the photo path and the extraction
+  date, because a benefits file has to survive being questioned later.
+
 **Blocked on:** the private profile (which programs are open, submitted, or never
 started, and which documents are in hand). Without it the bot can only operate
 generically — see "Two layers" below. Every specific next step needs the profile.

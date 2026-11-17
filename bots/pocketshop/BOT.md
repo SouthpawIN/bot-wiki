@@ -21,6 +21,28 @@ risk-adjusted expected value.
 **Interface.** `skill: pocketshop` — orchestrates the existing `pocket-shop`
 modules; it does not reimplement them.
 
+## Intake: phone photos, not just the flatbed
+
+The Wi-Fi printer/scanner is one intake device, not the only one. When it is
+broken, unavailable, or simply slower than walking over with a phone, the same
+pipeline runs from **photographs**:
+
+- **Inbox:** `~/Pictures/pocketshop-intake/` (configurable). Any new image is
+  picked up by the intake loop; no rename or sorting required first.
+- **Identification:** a photo must yield the set code, collector number, and
+  printing; if any of those is unreadable the card is queued as `needs-better-photo`
+  with the reason (glare, cropped edge, blurry number) instead of being guessed.
+  Vision runs on the local TurboFit model where one is served, so card images do
+  not leave the machine.
+- **Quality gates that actually matter:** full card in frame, collector number
+  legible, holo/foil legible under glare. A failed gate re-requests a photo; it
+  never files a low-confidence row as if it were certain.
+- **Same downstream:** identification → TCGplayer price → draft listing in the
+  chosen platform's draft state. Nothing about the listing path changes because
+  the source was a photo.
+- **Provenance:** each row records `source: photo|scan` and the image path, so a
+  disputed listing can be traced to the exact picture it came from.
+
 ## Mission, stated as outcomes
 
 - Every physical card has a row: scanned image, identified printing, condition,
