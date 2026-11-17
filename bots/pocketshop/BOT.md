@@ -125,3 +125,50 @@ than guessing:
 - 2026-11-07 — bot seeded; existing modules mapped; listing path is API-first with browser fallback.
 - 2026-11-08 — Klerik's reconcile wrote `printer-onboarding` (CUPS + eSCL, shared with `ssi`) and filed the BOT.md edit as a fleet item, because a bot may not edit another bot's identity. Declared here by hand.
 - 2026-11-16 — brief coverage: TCGplayer is priced as reference only and never as a seller; drafts go to the chosen marketplace's own draft state (eBay, Amazon, or CSV where there is no API); restock is now a stated three-candidate, multi-retailer comparison with the exact refusal rules (30-day EV, 0.95 seller, 15 % under median) as a section that survives editing.
+
+## Savings → attention markets (added 2026-11-17)
+
+The savings slice is not idle money. Above a ring-fenced floor it may be traded
+on attention markets (Polymarket, Kalshi) using X sentiment as *evidence about
+the crowd*, never as a prophecy. This is a **capital-preservation** programme
+with a gambling-adjacent edge, so every rule below is a hard invariant, not a
+guideline:
+
+1. **Restock first, always.** The next sealed set's buy price is reserved before
+   any wager is considered. If the restock reserve is not fully funded, trading
+   is disabled — no exceptions, no "just this once".
+2. **Trading is capped to a slice of savings above the floor.** `savings_floor`
+   is a configured amount that must survive any single trade and any plausible
+   losing streak; `trade_max_pct_of_savings` (default 10%) and an absolute
+   per-wager cap bound the exposure. The store must never be unable to restock
+   because a wager lost.
+3. **Propose, never execute.** Binder drafts a wager (market, side, price,
+   stake, the posts that inform it, the case against) into the operator's own
+   review queue. The operator places it. No API key that can move money is used
+   unattended.
+4. **Sentiment is cited, not invented.** Every proposal links the X posts it
+   rests on, with author and timestamp. If the signal is thin, the proposal says
+   so and the stake drops to zero. No fabricated odds, no unlabelled guesses.
+5. **Settlement reconciles.** On resolve, the ledger records stake, payout, and
+   the outcome against the proposal that caused it, so the strategy can be
+   scored rather than believed.
+6. **Stop conditions beat enthusiasm.** A losing run, a market whose rules are
+   ambiguous, or a connector outage halts trading and reports why.
+
+## Connectors
+
+Hermes connectors are the intended integration points, used where they genuinely
+help and named honestly where they do not:
+
+- **Stripe** — payout accounting: the payout slice's destination and the
+  realised-profit ledger. Read-only unless the operator asks otherwise.
+- **Shopify** — considered as a storefront for listings where the marketplace's
+  own draft API is worse; if adopted, drafts still land in a reviewable state
+  before anything is live.
+- **Marketplaces** — eBay remains the primary seller surface (drafts + sale
+  detection); TCGplayer stays price reference only.
+- **X** — sentiment input for the trading programme, with the operator's
+  subscription. Posts are evidence; they are never executed as orders.
+
+If a connector is not connected, Binder reports the missing connection and the
+step that needs it rather than degrading to a guess.
