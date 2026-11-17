@@ -160,11 +160,19 @@ guideline:
 Hermes connectors are the intended integration points, used where they genuinely
 help and named honestly where they do not:
 
-- **Stripe** — payout accounting: the payout slice's destination and the
-  realised-profit ledger. Read-only unless the operator asks otherwise.
-- **Shopify** — considered as a storefront for listings where the marketplace's
-  own draft API is worse; if adopted, drafts still land in a reviewable state
-  before anything is live.
+- **Stripe** (`connector: stripe_mcp`) — payout accounting: the payout slice's
+  destination and the realised-profit ledger. Read-only unless the operator
+  asks otherwise.
+- **Shopify** (`connector: shopify`) — storefront option for listings where a
+  marketplace's own draft API is worse; if adopted, drafts still land in a
+  reviewable state before anything is live.
+
+**Current connector status (checked 2026-11-17):** both connectors are
+available in this Hermes and **not connected** — `connected: false`, so a call
+returns CONNECTION_REQUIRED until the operator authorizes them from the
+connectors screen and names the account. Until then Binder reports the missing
+connection at the step that needs it; it does not estimate balances, invent
+payout destinations, or simulate a storefront.
 - **Marketplaces** — eBay remains the primary seller surface (drafts + sale
   detection); TCGplayer stays price reference only.
 - **X** — sentiment input for the trading programme, with the operator's
