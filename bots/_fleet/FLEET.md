@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-16
+updated: 2026-11-17
 tags: [fleet, index]
 ---
 
@@ -10,9 +10,13 @@ tags: [fleet, index]
 Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision). Verified against every
-`bots/*/BOT.md` on 2026-11-15: status and live-loop count are read from each
+`bots/*/BOT.md` on 2026-11-17: status and live-loop count are read from each
 BOT.md's frontmatter and its own Loops table; "Blocked on" compresses that bot's
-`## Needs from the operator`, never invents one. Both `live` loops are backed by real
+`## Needs from the operator`, never invents one. Nine rows read: 2 `live` at 1
+loop each, 6 `seeding` at 0, `ssi` `blocked` at 0 — 12 declared loops, all 12 on
+disk and none orphaned. Gates green at this commit: `verify_bots.py` 9 bots /
+34 skills / 12 loops / 0 problems, `senter_agent . --json` parses, `pytest -q`
+171 passed, 4 slow skipped. Both `live` loops are backed by real
 cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *` and
 `mesh-health` at `30 6 * * *`, both in the `default` profile with this wiki as
 workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
@@ -47,7 +51,7 @@ workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
 
 - `ai-daw/stem-separation`, `anser/faq-distill` and `turbofit/benchmark-rung`
   exist on disk but are not yet declared in their own Skills tables — only the
-  owning bot edits its BOT.md. Open since 2026-11-10, 2026-11-11 and 2026-11-15;
+  owning bot edits its BOT.md. Filed as a fleet `[BOTS]` item on 2026-11-17;
   the validator counts them (34 skills) but no owning bot's published skill lists
   them, so the procedure exists and is unreachable from the bot that owns it.
 - `ssi`: the program inventory the fleet queue still lists as missing to-do work

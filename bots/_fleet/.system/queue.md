@@ -15,6 +15,7 @@ one-line ask.
 - [ ] `ai-daw:second-engine` — add one non-ACE-Step local adapter behind the same Hermes plugin contract and prove a render | sources: bots/ai-daw/BOT.md
 - [ ] `hermes:surface-attach` — attach the Surface and phone to the tailnet web app and record serve/tailnet/profile steps in `devices/_mesh.md` | sources: bots/hermes/BOT.md
 - [ ] `pocketshop:amazon-path` — decide whether Amazon gets real drafts or CSV export, and record the platform choice per card class | sources: bots/pocketshop/BOT.md
+- [ ] `skills-declare-orphans` — `ai-daw/stem-separation`, `anser/faq-distill` and `turbofit/benchmark-rung` exist on disk and pass the validator but none is named in its own BOT.md Skills table, so the owning bot's published skill list cannot reach it; one line each, owners only | sources: bots/_fleet/FLEET.md, bots/ai-daw/BOT.md, bots/anser/BOT.md, bots/turbofit/BOT.md
 
 ## Skill
 
