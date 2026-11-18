@@ -130,7 +130,11 @@ Two ladders, never one. Dense on dedicated VRAM — **Arete 27B is the default a
 
 A variant never displaces a band default. It is offered *at* the band it fits, beside the default, and you can choose it yourself.
 
-**Choosing for yourself.** `auto` follows the ladder, but nothing is locked: `/turbofit shift <model>` switches to any catalog entry, `/turbofit intelligence | balanced | speed` re-ranks the same candidates by a different axis, and `references/fallback-chain.json` is a user-editable ordered chain — edit it and TurboFit serves that order instead of the default. The ladder is a recommendation, not a cage.
+**Choosing for yourself.** `auto` follows the ladder, but nothing is locked: `/turbofit shift <model>` switches to any catalog entry, `/turbofit intelligence | balanced | speed` re-ranks the same candidates by a different axis, and the fallback chain is yours to write. Put your own order in `~/.config/turbofit/fallback-chain.json` (or point `$TURBOFIT_CHAIN` at a file) and TurboFit serves that instead of the shipped default — no repo edit, and it survives updates. A level may name **any smaller model on this machine** or **any model served by another TurboFit node**: give it an `endpoint` (and optionally a `peer` name) and it costs this machine no VRAM at all, which is how you shift to a sibling box while your own GPUs are busy with something else. The ladder is a recommendation, not a cage.
+
+**The auxiliary keeps your VRAM.** Maple Preview 20B-A1B is the default auxiliary everywhere, and it runs with `-ngl 0`: its weights stay memory-mapped on disk and the active experts stream into system RAM (32 GB+) or straight off the SSD below that. Since 40–85% of Hermes tokens go through the auxiliary, that placement is what leaves the whole card for the main model. Ask for GPU layers explicitly and it will take them; the default never claims a card.
+
+**Small MoEs reach small cards.** Flint 40B-A2.5B and LFM2.5 24B-A2B offload measured expert layers to the host, so they are placed at 8–16 GB instead of being excluded: LFM2.5 sends 24 of 38 expert layers to the host at 8 GB, Flint 38 of 47. The tier table and the launcher use the same arithmetic, so a band that is advertised is a band that actually starts.
 
 **Multimodal — 16 entries, each with the runtime that serves it**
 
