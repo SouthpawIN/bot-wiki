@@ -81,7 +81,7 @@ Configure auto for this machine with no cloud fallback.
 Auto keeps picking the wrong model for my card — fix it.
 ```
 
-TurboSouth is a *profile*, not a second product: one TurboFit implementation, one support surface, and the sovthpaw pet arrives with it. `hermes profile install https://github.com/SouthpawIN/turbosouth.git --name turbosouth --yes` also works — but Hermes does not act on a distribution's `dependencies:`, so run the plugin install **first**, or just use `scripts/install`, which does both and verifies the result.
+**Install TurboSouth** with `scripts/install` — it installs the plugin first and proves it with a real completion. TurboSouth is a *profile*, not a second product: one TurboFit implementation, one support surface, and the sovthpaw pet arrives with it. `hermes profile install https://github.com/SouthpawIN/turbosouth.git --name turbosouth --yes` also works — but Hermes does not act on a distribution's `dependencies:`, so run the plugin install **first**, or just use `scripts/install`, which does both and verifies the result.
 
 ---
 
@@ -216,7 +216,7 @@ Engine binaries are PM-pinned and never downloaded at boot. TurboFit tracks upst
 
 ## Troubleshooting
 
-- **`WinError 10061` / connection refused on `127.0.0.1:8091`** — nothing is listening there. That port belongs to the TurboFit gateway, not the Hermes messaging gateway. Start it (`/turbofit setup`, or `scripts/turbofit-gateway.py`) and confirm with `curl http://127.0.0.1:8091/health`.
+- **`WinError 10061` on Windows** — connection refused on `127.0.0.1:8091`: nothing is listening there. That port belongs to the **TurboFit gateway**, not the Hermes messaging gateway. Start it (`/turbofit setup`, or `scripts/turbofit-gateway.py`) and confirm with `curl http://127.0.0.1:8091/health`.
 - **"no evidence-backed configuration fits"** — your topology has no measured rung yet. Run `scripts/turbofit-catalog-campaign`, or pick from `compatible_lanes` in the `/turbofit` report.
 - **A model answers from the cloud** — only `auto`/`active` may cross to an API backend, and only with `TURBOFIT_ALLOW_API=true`. Naming a local model returns a retryable `503` instead of a substituted answer.
 - **`vllm flavor needs a checkpoint directory`** — that family is served by vLLM and expects the HF checkpoint directory, not a `.gguf`. Check `references/artifact-manifest.json` for the snapshot digest.
