@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-17
+updated: 2026-11-18
 tags: [fleet, index]
 ---
 
@@ -15,11 +15,15 @@ BOT.md's frontmatter and its own Loops table; "Blocked on" compresses that bot's
 `## Needs from the operator`, never invents one. Nine rows read: 2 `live` at 1
 loop each, 6 `seeding` at 0, `ssi` `blocked` at 0 — 12 declared loops, all 12 on
 disk and none orphaned. Gates green at this commit: `verify_bots.py` 9 bots /
-34 skills / 12 loops / 0 problems, `senter_agent . --json` parses, `pytest -q`
+34 skills / 12 loops / 0 problems, `senter_agent . --json` parses, `pytest`
 171 passed, 4 slow skipped. Both `live` loops are backed by real
 cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *` and
 `mesh-health` at `30 6 * * *`, both in the `default` profile with this wiki as
-workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
+workdir, both `enabled: true` in `cron/jobs.json`. A loop whose BOT.md says
+`live` with no job behind it is an index bug. `kart-racer`'s character audit
+closed 2026-11-18: `.system/roster.md` carries one sourced entry per canonical
+NRCU character (35), 71 `[[UNSOURCED]]` markers and 12 needs-decision items, so
+the proof cell reads the audit rather than only the test count.
 
 | Bot | Callsign | Topic | Status | Live loops | Blocked on |
 |---|---|---|---|---|---|
@@ -44,7 +48,7 @@ workdir. A loop whose BOT.md says `live` with no job behind it is an index bug.
 | youtube | `scripts/cutroom.py` render + package | 27 tests on synthetic media |
 | ai-daw | `plugin/` — six `daw_*` tools, adapters, renderer | 14 tests, real audio via ffmpeg; `stem-separation` skill written 2026-11-10 |
 | anser | `scripts/corpus.py` fetch/cache/cite/refuse | 12 tests, import mode needs no credentials; `faq-distill` skill written 2026-11-11 |
-| kart-racer | Unity project at [SouthpawIN/nrcu-kart](https://github.com/SouthpawIN/nrcu-kart): 7 C# scripts + 35-character roster | 8 roster tests; `tools/check_project.py` ok; **not yet compiled** — needs a Unity editor |
+| kart-racer | Unity project at [SouthpawIN/nrcu-kart](https://github.com/SouthpawIN/nrcu-kart): 7 C# scripts + 35-character roster; `.system/roster.md` — the source audit, one entry per canonical NRCU character, 71 `[[UNSOURCED]]` markers, 12 needs-decision items | 9 roster tests; `tools/check_project.py` ok; **not yet compiled** — needs a Unity editor |
 | ssi | `scripts/casefile.py` intake/deadlines/review/fill | 9 tests on synthetic AcroForm PDFs |
 
 ## Known drift
