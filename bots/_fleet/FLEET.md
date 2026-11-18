@@ -10,12 +10,14 @@ tags: [fleet, index]
 Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision). Verified against every
-`bots/*/BOT.md` on 2026-11-17: status and live-loop count are read from each
+`bots/*/BOT.md` on 2026-11-18: status and live-loop count are read from each
 BOT.md's frontmatter and its own Loops table; "Blocked on" compresses that bot's
 `## Needs from the operator`, never invents one. Nine rows read: 2 `live` at 1
-loop each, 6 `seeding` at 0, `ssi` `blocked` at 0 — 12 declared loops, all 12 on
-disk and none orphaned. Gates green at this commit: `verify_bots.py` 9 bots /
-34 skills / 12 loops / 0 problems, `senter_agent . --json` parses, `pytest`
+loop each, 6 `seeding` at 0, `ssi` `blocked` at 0 — 12 declared loops, 13 on
+disk: the 13th is `pocketshop/loops/savings-trading.md`, which arrived in
+`36cd6e6` without a row in pocketshop's own Loops table (orphan, filed below).
+Gates green at this commit: `verify_bots.py` 9 bots /
+34 skills / 13 loops / 0 problems, `senter_agent . --json` parses, `pytest`
 171 passed, 4 slow skipped. Both `live` loops are backed by real
 cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *` and
 `mesh-health` at `30 6 * * *`, both in the `default` profile with this wiki as
@@ -52,6 +54,13 @@ the proof cell reads the audit rather than only the test count.
 | ssi | `scripts/casefile.py` intake/deadlines/review/fill | 9 tests on synthetic AcroForm PDFs |
 
 ## Known drift
+
+- `pocketshop` gained `loops/savings-trading.md` in `36cd6e6` (2026-11-18) with no
+  row in its own Loops table, and that loop's frontmatter names
+  `skill: savings-markets` while `bots/pocketshop/skills/` has no such skill —
+  a declared loop whose skill is missing is unreachable, exactly the orphan class
+  the reconcile step files rather than deletes. Only Binder may fix either, so
+  fleet `[BOTS] pocketshop:declare-savings-trading` carries it.
 
 - `ai-daw/stem-separation`, `anser/faq-distill` and `turbofit/benchmark-rung`
   exist on disk but are not yet declared in their own Skills tables — only the
