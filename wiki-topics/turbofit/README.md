@@ -81,7 +81,7 @@ Configure auto for this machine with no cloud fallback.
 Auto keeps picking the wrong model for my card — fix it.
 ```
 
-**Install TurboSouth** with `scripts/install` — it installs the plugin first and proves it with a real completion. TurboSouth is a *profile*, not a second product: one TurboFit implementation, one support surface, and the sovthpaw pet arrives with it. `hermes profile install https://github.com/SouthpawIN/turbosouth.git --name turbosouth --yes` also works — but Hermes does not act on a distribution's `dependencies:`, so run the plugin install **first**, or just use `scripts/install`, which does both and verifies the result.
+**Install TurboSouth** with `scripts/install` — it installs the plugin first and proves it with a real completion. TurboSouth installs TurboFit when it is missing, then verifies it with a real completion. TurboSouth is a *profile*, not a second product: one TurboFit implementation, one support surface, and the sovthpaw pet arrives with it. `hermes profile install https://github.com/SouthpawIN/turbosouth.git --name turbosouth --yes` also works — but Hermes does not act on a distribution's `dependencies:`, so run the plugin install **first**, or just use `scripts/install`, which does both and verifies the result.
 
 ---
 
@@ -171,7 +171,7 @@ tailscale serve --bg --https=443 http://127.0.0.1:8091
 provider: custom:turbofit   base_url: https://<node>.your-tailnet.ts.net/v1   model: auto
 ```
 
-Prove it from the other device with `/turbofit smoke`. TurboFit never uses Funnel — nothing here needs public ingress, and a peer is only ever reachable across your own tailnet.
+Start the local endpoint with `/turbofit serve` if it is not already running (background: `scripts/turbofit-gateway.py`), and prove it from the other device with `/turbofit smoke`. TurboFit never uses Funnel — nothing here needs public ingress, and a peer is only ever reachable across your own tailnet.
 
 - `auto` on a node with no GPU delegates to a healthy peer instead of failing.
 - A peer's model is addressable as `peer.ts.net/model-name`; a bare `model-name` resolves to whichever peer serves it.
