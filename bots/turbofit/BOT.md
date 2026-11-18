@@ -179,3 +179,39 @@ and keeps every measurement it publishes in Hermes Index terms.
 - 2026-11-07 — renamed from Fitment to TurboSouth; mission realigned with the TurboSouth support project (install → verify → upstream PR).
 - 2026-11-07 — seven-model matrix implemented: 10 catalog variants + recipes + manifest + regenerated matrix in `turbofit` PR #51; 935 tests pass. Ladder promotion still needs benchmarks.
 - 2026-11-16 — brief coverage: mission reframed as the local-inference provider with the five requirements written out (scan+recommend from our benchmarks, install+configure for Hermes verified by completion, peer discovery, memory yield/heal, Hermes Index submission). Added the Hermes Index status block: Hermes-suite only (Hermes Bench, TerminalBench 4, TerminalBench Science, SkillsBench), deep-swe/agentic-pair retired, no measurement means no index and reads "no measurements yet", suites reported N/4, Hermes Bench internal-only. Matrix loop unchanged.
+
+## Strata for every MoE, and SSD streaming as the default trick (2026-11-18)
+
+Strata is not only for the biggest models. Its SSD-streaming path is the
+mechanism that makes large models viable on small machines, and it should be
+used deliberately:
+
+- **Maple 20A1B as the universal auxiliary.** The auxiliary model is where 40–85%
+  of Hermes tokens go, so it must be cheap. Maple should sit mostly on SSD with
+  its A1B experts streaming into system RAM, leaving VRAM almost entirely free
+  for the main model. On that budget most machines "wouldn't even notice" it.
+- **Flint 40A2.5B and LFM2.5 24A2.5B** get the same treatment — Strata-streamed
+  where the pack supports it, SSD-streamed otherwise — so they land on lower
+  hardware instead of being excluded.
+
+## User-defined fallback chain
+
+The memory-pressure ladder must not be a fixed list. The operator picks the order:
+any smaller model already on the machine, or any model served by another TurboFit
+node on the tailnet. Two real uses: dropping to a sibling machine when the main
+GPUs are busy with something else, and dropping to a smaller local model on the
+same box. The chain is config, it is per-machine, and the UI must show and edit it.
+
+## UI: dashboard, not a list
+
+Round dials like a car instrument cluster — memory pressure, VRAM/RAM split,
+tokens/s, context headroom. Plus a **gear-shift tree** of the fallback chain: each
+model a gear, the current one engaged, and shifting between them by hand. Shifting
+must be possible without editing JSON.
+
+## Serve by default
+
+There is no separate opt-in "serve to other devices" step. Every TurboFit install
+serves on a tailnet endpoint by default — even when that endpoint is only the local
+node — so other TurboFit machines on the network can reach the model without
+bespoke configuration. Networking is the default state; isolation is the exception.
