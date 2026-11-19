@@ -10,15 +10,6 @@
 ---
 
 
-## Support the work
-
-The fleet is free and MIT. If one of these bots saved you time, these keep the work going:
-
-- ☕ **[Ko-fi](https://ko-fi.com/sovthpaw)** — one-off tip, no account needed
-- 🧋 **[Buy Me a Coffee](https://www.buymeacoffee.com/sovthpaw)** — one-off or monthly
-- 🔧 **[Patreon](https://www.patreon.com/sovthpaw)** — monthly support, and a one-on-one live call with me once a month
-
-Nothing here is paywalled and no bot checks whether you donated. A star helps too.
 
 ## What Bot Wiki is
 
@@ -259,3 +250,17 @@ resolves to nothing. If it is green, the wiki is internally consistent.
 ---
 
 *Built on [Hermes Agent](https://github.com/NousResearch/hermes-agent). Towards Self-Improvement.*
+
+## Support the work
+
+The fleet is free and MIT. If one of these bots saved you time, these keep the work going.
+
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-tip-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/sovthpaw)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/sovthpaw)
+[![Patreon](https://img.shields.io/badge/Patreon-join-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/sovthpaw)
+
+- ☕ **Ko-fi** — one-off tip, no account needed
+- 🧋 **Buy Me a Coffee** — one-off or monthly
+- 🔧 **Patreon** — monthly support, and a one-on-one live call with me once a month
+
+Nothing here is paywalled and no bot checks whether you donated. A star helps too.
