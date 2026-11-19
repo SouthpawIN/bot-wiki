@@ -16,7 +16,7 @@ The fleet is free and MIT. If one of these bots saved you time, these keep the w
 
 - ☕ **[Ko-fi](https://ko-fi.com/sovthpaw)** — one-off tip, no account needed
 - 🧋 **[Buy Me a Coffee](https://www.buymeacoffee.com/sovthpaw)** — one-off or monthly
-- 🔧 **[Patreon](https://www.patreon.com/sovthpaw)** — monthly, early results, a vote on priorities
+- 🔧 **[Patreon](https://www.patreon.com/sovthpaw)** — monthly support, and a one-on-one live call with me once a month
 
 Nothing here is paywalled and no bot checks whether you donated. A star helps too.
 
