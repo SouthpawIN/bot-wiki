@@ -3,7 +3,7 @@ type: loop
 slug: savings-trading
 bot: pocketshop
 schedule: "15 9 * * *"
-state: spec
+state: ready
 skill: savings-markets
 created: 2026-11-17
 ---
@@ -15,11 +15,13 @@ considered.
 
 ## Steps
 
-1. Read `data/finance.json`. Compute: restock reserve required for the next
-   sealed set, savings balance, savings floor, tradable amount.
-2. **Gate:** tradable = savings − max(savings_floor, next_restock_buy_price).
-   If tradable <= 0 → stop, log `trading disabled: restock reserve not funded`,
-   and report the shortfall. Nothing is proposed.
+1. **Gate first, in code.** `from trading_gate import evaluate` and call
+   `evaluate(finance, config)` before looking at any market. It reads
+   `data/finance.json` and refuses if `savings_floor` or `trade_max_absolute` is
+   unset — an unset money limit is a refusal, never a default.
+2. If `gate.open` is false → stop, log `gate.reason`, report `gate.shortfall`.
+   Nothing is proposed. Otherwise `gate.tradable` and `gate.max_stake` bound every
+   stake, and `stake_for(gate, requested)` clamps it.
 3. Aggregate X sentiment for candidate markets (Polymarket, Kalshi): for each,
    collect posts with author + timestamp + claim, and the market's current
    price. Weight recent, high-signal accounts; record the set, don't summarise
