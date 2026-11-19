@@ -111,13 +111,15 @@ than guessing:
 | [[bots/pocketshop/skills/restock-ev-pick/SKILL]] | weekly, when restock balance ≥ $150 | written |
 | [[bots/pocketshop/skills/sale-ledger/SKILL]] | every sale alert, and month-end | written |
 | [[bots/pocketshop/skills/printer-onboarding/SKILL]] | once, to bring the shared scanner online | written by Klerik 2026-11-08 |
+| [[bots/pocketshop/skills/savings-markets/SKILL]] | daily, after the ledger is current | written |
 
 ## Loops
 
 | Loop | Schedule | State |
 |---|---|---|
-| [[bots/pocketshop/loops/ev-discovery]] | daily 09:00 | spec |
+| [[bots/pocketshop/loops/ev-discovery]] | daily 09:00 | ready |
 | [[bots/pocketshop/loops/sale-watch]] | hourly 08:00–23:00 | spec |
+| [[bots/pocketshop/loops/savings-trading]] | daily 09:15 | ready |
 
 ## Hold points
 
