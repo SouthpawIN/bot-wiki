@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-18
+updated: 2026-11-19
 tags: [fleet, index]
 ---
 
@@ -10,19 +10,25 @@ tags: [fleet, index]
 Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision). Verified against every
-`bots/*/BOT.md` on 2026-11-18: status and live-loop count are read from each
+`bots/*/BOT.md` on 2026-11-19: status and live-loop count are read from each
 BOT.md's frontmatter and its own Loops table; "Blocked on" compresses that bot's
-`## Needs from the operator`, never invents one. Nine rows read: 2 `live` at 1
-loop each, 6 `seeding` at 0, `ssi` `blocked` at 0 — 12 declared loops, 13 on
-disk: the 13th is `pocketshop/loops/savings-trading.md`, which arrived in
-`36cd6e6` without a row in pocketshop's own Loops table (orphan, filed below).
+`## Needs from the operator`, never invents one. Nine rows read, unchanged from
+the day before: 2 `live` at 1 loop each, 6 `seeding` at 0, `ssi` `blocked` at 0
+(12 days, so not yet due the 14-day demotion) — 12 declared loops, 13 on disk:
+the 13th is `pocketshop/loops/savings-trading.md`, which arrived in `36cd6e6`
+without a row in pocketshop's own Loops table (orphan, filed below).
 Gates green at this commit: `verify_bots.py` 9 bots /
-34 skills / 13 loops / 0 problems, `senter_agent . --json` parses, `pytest`
-171 passed, 4 slow skipped. Both `live` loops are backed by real
+34 skills / 13 loops / 0 problems, `senter_agent . --json` parses,
+`pytest` 171 passed, 4 slow skipped. The 34 includes `turbofit/support-verify`,
+which TurboSouth declared in its own Skills table, so that bot's orphan count is
+down to `benchmark-rung` alone. Both `live` loops are backed by real
 cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *` and
 `mesh-health` at `30 6 * * *`, both in the `default` profile with this wiki as
 workdir, both `enabled: true` in `cron/jobs.json`. A loop whose BOT.md says
-`live` with no job behind it is an index bug. `kart-racer`'s character audit
+`live` with no job behind it is an index bug. Published loaders were re-rendered
+on 2026-11-19: every `bot-<slug>` skill was still the 2026-11-16 17:22 render
+while five BOT.md files moved through 2026-11-18, which is drift by the publish
+rule below and is now closed. `kart-racer`'s character audit
 closed 2026-11-18: `.system/roster.md` carries one sourced entry per canonical
 NRCU character (35), 71 `[[UNSOURCED]]` markers and 12 needs-decision items, so
 the proof cell reads the audit rather than only the test count.
@@ -67,6 +73,9 @@ the proof cell reads the audit rather than only the test count.
   owning bot edits its BOT.md. Filed as a fleet `[BOTS]` item on 2026-11-17;
   the validator counts them (34 skills) but no owning bot's published skill lists
   them, so the procedure exists and is unreachable from the bot that owns it.
+  TurboSouth closed its own share of this on 2026-11-15 by declaring
+  `support-verify`, which proves the fix is a one-line edit the owner makes, not
+  a fleet rewrite; two owners are still to move.
 - `ssi`: the program inventory the fleet queue still lists as missing to-do work
   is already written into `bots/ssi/BOT.md` (six programs, first form each,
   2026-11-07). The bot is now explicitly two-layer — public template plus
