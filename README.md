@@ -9,6 +9,17 @@
 
 ---
 
+
+## Support the work
+
+The fleet is free and MIT. If one of these bots saved you time, these keep the work going:
+
+- ☕ **[Ko-fi](https://ko-fi.com/sovthpaw)** — one-off tip, no account needed
+- 🧋 **[Buy Me a Coffee](https://www.buymeacoffee.com/sovthpaw)** — one-off or monthly
+- 🔧 **[Patreon](https://www.patreon.com/sovthpaw)** — monthly, early results, a vote on priorities
+
+Nothing here is paywalled and no bot checks whether you donated. A star helps too.
+
 ## What Bot Wiki is
 
 Bot Wiki is a working system for running many projects at once without losing any
