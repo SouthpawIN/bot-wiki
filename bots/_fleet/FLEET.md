@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-19
+updated: 2026-11-20
 tags: [fleet, index]
 ---
 
@@ -10,24 +10,26 @@ tags: [fleet, index]
 Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision). Verified against every
-`bots/*/BOT.md` on 2026-11-19: status and live-loop count are read from each
+`bots/*/BOT.md` on 2026-11-20: status and live-loop count are read from each
 BOT.md's frontmatter and its own Loops table; "Blocked on" compresses that bot's
 `## Needs from the operator`, never invents one. Nine rows read, unchanged from
 the day before: 2 `live` at 1 loop each, 6 `seeding` at 0, `ssi` `blocked` at 0
-(12 days, so not yet due the 14-day demotion) — 12 declared loops, 13 on disk:
-the 13th is `pocketshop/loops/savings-trading.md`, which arrived in `36cd6e6`
-without a row in pocketshop's own Loops table (orphan, filed below).
+(13 days, so one day short of the 14-day demotion). The loop bookkeeping is
+clean for the first time since `36cd6e6`: Binder declared
+`pocketshop/loops/savings-trading` in its own Loops table (state `ready`) and
+wrote the `savings-markets` skill that loop's frontmatter had been naming into
+the void, so **13 loops declared, 13 on disk**, none orphaned.
 Gates green at this commit: `verify_bots.py` 9 bots /
-34 skills / 13 loops / 0 problems, `senter_agent . --json` parses,
-`pytest` 171 passed, 4 slow skipped. The 34 includes `turbofit/support-verify`,
-which TurboSouth declared in its own Skills table, so that bot's orphan count is
-down to `benchmark-rung` alone. Both `live` loops are backed by real
+35 skills / 13 loops / 0 problems, `senter_agent . --json` parses (91
+documents), `pytest` 206 passed, 4 slow skipped. The 35 includes
+`turbofit/support-verify` and `pocketshop/savings-markets`, both declared by
+their owners. Both `live` loops are backed by real
 cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *` and
 `mesh-health` at `30 6 * * *`, both in the `default` profile with this wiki as
 workdir, both `enabled: true` in `cron/jobs.json`. A loop whose BOT.md says
 `live` with no job behind it is an index bug. Published loaders were re-rendered
-on 2026-11-19: every `bot-<slug>` skill was still the 2026-11-16 17:22 render
-while five BOT.md files moved through 2026-11-18, which is drift by the publish
+on 2026-11-20: the 2026-11-19 06:02 render was older than both `hermes`' and
+`bot-wiki`'s own BOT.md by that evening's commits, which is drift by the publish
 rule below and is now closed. `kart-racer`'s character audit
 closed 2026-11-18: `.system/roster.md` carries one sourced entry per canonical
 NRCU character (35), 71 `[[UNSOURCED]]` markers and 12 needs-decision items, so
@@ -52,7 +54,7 @@ the proof cell reads the audit rather than only the test count.
 | bot-wiki | `scripts/verify_bots.py`, `tools/publish_skills.py`, `fleet-reconcile` cron | 9 bots + the shared `sovthpaw-voice` and `wifi-scanner-control` skills; loop has run and committed |
 | hermes | tailnet serve of the web app + 9 bot profiles | https://hermes-vps.tail6ff78b.ts.net:8443/ → 302 to Nous OAuth; `mesh-health` armed 06:30; `hermes profile list` shows all nine |
 | turbofit | 62 catalog variants + recipes + manifest + matrix; `release-gate` specs campaign coverage | [PR #51](https://github.com/SouthpawIN/turbofit/pull/51), 936 tests pass; 1,165-cell campaign is the evidence ledger for every `measured` rung |
-| pocketshop | `restock_ev.py` decision math | [PR #2](https://github.com/SouthpawIN/pocket-shop/pull/2), 13 tests |
+| pocketshop | `restock_math.py` + `trading_gate.py` decision math; `savings-markets` skill | 35 tests in `bots/pocketshop/tests/`; [PR #2](https://github.com/SouthpawIN/pocket-shop/pull/2) for the original EV path |
 | youtube | `scripts/cutroom.py` render + package | 27 tests on synthetic media |
 | ai-daw | `plugin/` — six `daw_*` tools, adapters, renderer | 14 tests, real audio via ffmpeg; `stem-separation` skill written 2026-11-10 |
 | anser | `scripts/corpus.py` fetch/cache/cite/refuse | 12 tests, import mode needs no credentials; `faq-distill` skill written 2026-11-11 |
@@ -61,20 +63,21 @@ the proof cell reads the audit rather than only the test count.
 
 ## Known drift
 
-- `pocketshop` gained `loops/savings-trading.md` in `36cd6e6` (2026-11-18) with no
-  row in its own Loops table, and that loop's frontmatter names
-  `skill: savings-markets` while `bots/pocketshop/skills/` has no such skill —
-  a declared loop whose skill is missing is unreachable, exactly the orphan class
-  the reconcile step files rather than deletes. Only Binder may fix either, so
-  fleet `[BOTS] pocketshop:declare-savings-trading` carries it.
+- `pocketshop/savings-trading` (opened 2026-11-18 in `36cd6e6`, closed 2026-11-20)
+  was the fleet's one unreachable loop: declared in no Loops table and naming a
+  `skill: savings-markets` that did not exist. Binder closed both halves itself —
+  the skill plus `trading_gate.py` and 15 tests, and the Loops and Skills rows —
+  so the rule held in the right direction: the owner moved, the index only
+  followed.
 
 - `ai-daw/stem-separation`, `anser/faq-distill` and `turbofit/benchmark-rung`
   exist on disk but are not yet declared in their own Skills tables — only the
   owning bot edits its BOT.md. Filed as a fleet `[BOTS]` item on 2026-11-17;
-  the validator counts them (34 skills) but no owning bot's published skill lists
+  the validator counts them (35 skills, three of them orphans) but no owning bot's published skill lists
   them, so the procedure exists and is unreachable from the bot that owns it.
   TurboSouth closed its own share of this on 2026-11-15 by declaring
-  `support-verify`, which proves the fix is a one-line edit the owner makes, not
+  `support-verify`, and Binder its share on 2026-11-20 by declaring
+  `savings-markets`, which proves the fix is a one-line edit the owner makes, not
   a fleet rewrite; two owners are still to move.
 - `ssi`: the program inventory the fleet queue still lists as missing to-do work
   is already written into `bots/ssi/BOT.md` (six programs, first form each,
