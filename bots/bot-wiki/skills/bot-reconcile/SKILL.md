@@ -27,6 +27,14 @@ The nightly procedure. Read-only until step 5.
 5. **Claim one item.** Oldest `[ ]` in any `.system/queue.md`, cross-bot queue
    last. Mark `[~]`. Produce the artifact it names. Mark `[x]` only after
    `python -m senter_agent . --json` and `pytest -q` both pass.
+
+   **Check `git fetch origin && git log HEAD..origin/main` before writing, not
+   after a rejected push.** The other nine bots are live and edit their own
+   files; a row can be closed upstream while this run is still drafting, and an
+   add/add conflict on the artifact means this run's file was the redundant one.
+   When that happens the owner's version wins on the rebase and the row closes
+   `[x]` on the owner's evidence, with the discarded write named in the row —
+   never resurrect your own copy over a tested one.
 6. **Inject.** Append to `bots/<slug>/.system/injections.md` under `[UNREAD]`:
    one sentence, outcome-first. The human reads this next time they talk to him.
 
