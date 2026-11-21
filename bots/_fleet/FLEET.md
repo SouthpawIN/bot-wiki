@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-20
+updated: 2026-11-21
 tags: [fleet, index]
 ---
 
@@ -10,30 +10,29 @@ tags: [fleet, index]
 Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision). Verified against every
-`bots/*/BOT.md` on 2026-11-20: status and live-loop count are read from each
+`bots/*/BOT.md` on 2026-11-21: status and live-loop count are read from each
 BOT.md's frontmatter and its own Loops table; "Blocked on" compresses that bot's
-`## Needs from the operator`, never invents one. Nine rows read, unchanged from
-the day before: 2 `live` at 1 loop each, 6 `seeding` at 0, `ssi` `blocked` at 0
-(13 days, so one day short of the 14-day demotion). The loop bookkeeping is
-clean for the first time since `36cd6e6`: Binder declared
-`pocketshop/loops/savings-trading` in its own Loops table (state `ready`) and
-wrote the `savings-markets` skill that loop's frontmatter had been naming into
-the void, so **13 loops declared, 13 on disk**, none orphaned.
+`## Needs from the operator`, never invents one. Nine rows read, unchanged for
+the third day: 2 `live` at 1 loop each, 6 `seeding` at 0, `ssi` `blocked` at 0.
+`ssi` now stands at **14 days blocked** (seeded 2026-11-07) with no human reply,
+so the demote-to-`paused` rule is due — but the row is Beacon's BOT.md, which
+only its owner edits, so the demotion is owed as a one-line owner edit rather
+than applied from here. Loop bookkeeping holds: **13 loops declared, 13 on
+disk**, none orphaned and none missing.
 Gates green at this commit: `verify_bots.py` 9 bots /
-35 skills / 13 loops / 0 problems, `senter_agent . --json` parses (91
-documents), `pytest` 206 passed, 4 slow skipped. The 35 includes
-`turbofit/support-verify` and `pocketshop/savings-markets`, both declared by
-their owners. Both `live` loops are backed by real
-cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *` and
-`mesh-health` at `30 6 * * *`, both in the `default` profile with this wiki as
-workdir, both `enabled: true` in `cron/jobs.json`. A loop whose BOT.md says
-`live` with no job behind it is an index bug. Published loaders were re-rendered
-on 2026-11-20: the 2026-11-19 06:02 render was older than both `hermes`' and
-`bot-wiki`'s own BOT.md by that evening's commits, which is drift by the publish
-rule below and is now closed. `kart-racer`'s character audit
-closed 2026-11-18: `.system/roster.md` carries one sourced entry per canonical
-NRCU character (35), 71 `[[UNSOURCED]]` markers and 12 needs-decision items, so
-the proof cell reads the audit rather than only the test count.
+36 skills / 13 loops / 0 problems, `senter_agent . --json` parses (91
+documents), `pytest` 206 passed, 4 slow skipped. The 36th is
+`turbofit/peer-discovery`, written by Klerik on 2026-11-21 against the code in
+`turbofit_runtime.tailnet` and `docs/tailnet-federation.md`; like the other
+orphans it needs one line in its owner's Skills table. Both `live` loops are
+backed by real cron jobs, not just declared state — `fleet-reconcile` at
+`0 6 * * *` and `mesh-health` at `30 6 * * *`, both in the `default` profile
+with this wiki as workdir, both `enabled: true` in `cron/jobs.json`. A loop
+whose BOT.md says `live` with no job behind it is an index bug.
+`kart-racer`'s character audit closed 2026-11-18: `.system/roster.md` carries
+one sourced entry per canonical NRCU character (35), 71 `[[UNSOURCED]]` markers
+and 12 needs-decision items, so the proof cell reads the audit rather than only
+the test count.
 
 | Bot | Callsign | Topic | Status | Live loops | Blocked on |
 |---|---|---|---|---|---|
@@ -70,10 +69,11 @@ the proof cell reads the audit rather than only the test count.
   so the rule held in the right direction: the owner moved, the index only
   followed.
 
-- `ai-daw/stem-separation`, `anser/faq-distill` and `turbofit/benchmark-rung`
-  exist on disk but are not yet declared in their own Skills tables — only the
-  owning bot edits its BOT.md. Filed as a fleet `[BOTS]` item on 2026-11-17;
-  the validator counts them (35 skills, three of them orphans) but no owning bot's published skill lists
+- `ai-daw/stem-separation`, `anser/faq-distill`, `turbofit/benchmark-rung` and
+  `turbofit/peer-discovery` exist on disk but are not yet declared in their own
+  Skills tables — only the owning bot edits its BOT.md. Filed as a fleet
+  `[BOTS]` item on 2026-11-17, extended 2026-11-21; the validator counts them
+  (36 skills, four of them orphans) but no owning bot's published skill lists
   them, so the procedure exists and is unreachable from the bot that owns it.
   TurboSouth closed its own share of this on 2026-11-15 by declaring
   `support-verify`, and Binder its share on 2026-11-20 by declaring
