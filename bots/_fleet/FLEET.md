@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-21
+updated: 2026-11-22
 tags: [fleet, index]
 ---
 
@@ -9,26 +9,28 @@ tags: [fleet, index]
 
 Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
-loops not yet armed), `blocked` (needs a human decision). Verified against every
-`bots/*/BOT.md` on 2026-11-21: status and live-loop count are read from each
-BOT.md's frontmatter and its own Loops table; "Blocked on" compresses that bot's
-`## Needs from the operator`, never invents one. Nine rows read, unchanged for
-the third day: 2 `live` at 1 loop each, 6 `seeding` at 0, `ssi` `blocked` at 0.
-`ssi` now stands at **14 days blocked** (seeded 2026-11-07) with no human reply,
+loops not yet armed), `blocked` (needs a human decision), `paused` (archived —
+kept, not deleted). Verified against every `bots/*/BOT.md` on 2026-11-22: status
+and live-loop count are read from each BOT.md's frontmatter and its own Loops
+table; "Blocked on" compresses that bot's `## Needs from the operator`, never
+invents one. Nine rows read, unchanged for the fourth day: 2 `live` at 1 loop
+each, 6 `seeding` at 0, `ssi` `blocked` at 0.
+`ssi` now stands at **15 days blocked** (seeded 2026-11-07) with no human reply,
 so the demote-to-`paused` rule is due — but the row is Beacon's BOT.md, which
 only its owner edits, so the demotion is owed as a one-line owner edit rather
-than applied from here. Loop bookkeeping holds: **13 loops declared, 13 on
-disk**, none orphaned and none missing.
+than applied from here; `bot-archive` (written this run) is the format that edit
+follows. Loop bookkeeping holds: **13 loops declared, 13 on disk**, none orphaned
+and none missing.
 Gates green at this commit: `verify_bots.py` 9 bots /
-36 skills / 13 loops / 0 problems, `senter_agent . --json` parses (91
-documents), `pytest` 206 passed, 4 slow skipped. The 36th is
-`turbofit/peer-discovery`, written by Klerik on 2026-11-21 against the code in
-`turbofit_runtime.tailnet` and `docs/tailnet-federation.md`; like the other
-orphans it needs one line in its owner's Skills table. Both `live` loops are
-backed by real cron jobs, not just declared state — `fleet-reconcile` at
-`0 6 * * *` and `mesh-health` at `30 6 * * *`, both in the `default` profile
-with this wiki as workdir, both `enabled: true` in `cron/jobs.json`. A loop
-whose BOT.md says `live` with no job behind it is an index bug.
+37 skills / 13 loops / 0 problems, `senter_agent . --json` parses (93
+documents), `pytest` 206 passed, 4 slow skipped. The 37th is
+`bot-wiki/bot-archive`, written 2026-11-22 for the overdue first archive; four
+orphan skills still need one line each in their owners' Skills tables. Both
+`live` loops are backed by real cron jobs, not just declared state —
+`fleet-reconcile` at `0 6 * * *` and `mesh-health` at `30 6 * * *`, both in the
+`default` profile with this wiki as workdir, both `enabled: true` in
+`cron/jobs.json`. A loop whose BOT.md says `live` with no job behind it is an
+index bug.
 `kart-racer`'s character audit closed 2026-11-18: `.system/roster.md` carries
 one sourced entry per canonical NRCU character (35), 71 `[[UNSOURCED]]` markers
 and 12 needs-decision items, so the proof cell reads the audit rather than only
@@ -50,7 +52,7 @@ the test count.
 
 | Bot | Working artifact | Proof |
 |---|---|---|
-| bot-wiki | `scripts/verify_bots.py`, `tools/publish_skills.py`, `fleet-reconcile` cron | 9 bots + the shared `sovthpaw-voice` and `wifi-scanner-control` skills; loop has run and committed |
+| bot-wiki | `scripts/verify_bots.py`, `tools/publish_skills.py`, `fleet-reconcile` cron; `bot-archive` for the lifecycle's other end | 9 bots + the shared `sovthpaw-voice` and `wifi-scanner-control` skills; loop has run and committed |
 | hermes | tailnet serve of the web app + 9 bot profiles | https://hermes-vps.tail6ff78b.ts.net:8443/ → 302 to Nous OAuth; `mesh-health` armed 06:30; `hermes profile list` shows all nine |
 | turbofit | 62 catalog variants + recipes + manifest + matrix; `release-gate` specs campaign coverage | [PR #51](https://github.com/SouthpawIN/turbofit/pull/51), 936 tests pass; 1,165-cell campaign is the evidence ledger for every `measured` rung |
 | pocketshop | `restock_math.py` + `trading_gate.py` decision math; `savings-markets` skill | 35 tests in `bots/pocketshop/tests/`; [PR #2](https://github.com/SouthpawIN/pocket-shop/pull/2) for the original EV path |
@@ -73,7 +75,7 @@ the test count.
   `turbofit/peer-discovery` exist on disk but are not yet declared in their own
   Skills tables — only the owning bot edits its BOT.md. Filed as a fleet
   `[BOTS]` item on 2026-11-17, extended 2026-11-21; the validator counts them
-  (36 skills, four of them orphans) but no owning bot's published skill lists
+  (37 skills, four of them orphans) but no owning bot's published skill lists
   them, so the procedure exists and is unreachable from the bot that owns it.
   TurboSouth closed its own share of this on 2026-11-15 by declaring
   `support-verify`, and Binder its share on 2026-11-20 by declaring
@@ -83,7 +85,10 @@ the test count.
   is already written into `bots/ssi/BOT.md` (six programs, first form each,
   2026-11-07). The bot is now explicitly two-layer — public template plus
   `$HERMES_PRIVATE/ssi/profile.md` — so what still blocks specific operation is
-  the operator creating that private profile, not missing writing.
+  the operator creating that private profile, not missing writing. At 15 days
+  blocked the demotion to `paused` is due as an owner edit; `bot-archive` now
+  carries the exact four lines that edit touches, so the pause and its unpause
+  ask cannot drift apart.
 - **Private-profile pattern.** Where a bot needs household/account/device facts,
   the repo carries only the shape and the loader contract; the values live at
   `$HERMES_PRIVATE/<bot>/` (defaulting to `~/.hermes/private/<bot>/`) and are
@@ -97,10 +102,11 @@ the test count.
 - `bots/_fleet/skills/*` (`sovthpaw-voice`, `wifi-scanner-control`) **is now**
   installed by `tools/publish_skills.py` under `$HERMES_HOME/skills/fleet/<name>/`
   (2026-11-16), and `verify_bots.py` counts the fleet skills explicitly.
-- `.system/` is gitignored, so queues and injections are per-clone state. The
-  clone at `~/.hermes/wiki` carried none on 2026-11-12; the maintainer edits
-  `~/work/agent-wiki` and mirrors them. Two clones, one queue, is a fork waiting
-  to happen — worth making `.system/` tracked or fixing the mirroring.
+- `.system/` is gitignored, so queues and injections are per-clone state — yet
+  both clones have been carrying tracked edits to `bots/_fleet/.system/queue.md`
+  since it was force-added, so the queue is now half-tracked: edits to it commit,
+  edits to `bots/<slug>/.system/*` do not. Worth either tracking the whole tree
+  or none of it; until then the queue lives in the clone that wrote it.
 - Both clones were corrupt again at the 2026-11-13 run: five zero-byte loose
   objects in `~/.hermes/wiki`, `HEAD` unreadable, no working tree. The documented
   repair (delete only 0-byte objects, `git fetch`, `git reset --mixed
