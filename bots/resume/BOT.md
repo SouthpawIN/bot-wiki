@@ -11,7 +11,7 @@ repos: []
 
 # Folio — résumé
 
-**Mission.** Keep one client's résumé true, current, and targeted: hold a master
+**Mission.** Keep one client's résumé true, current, and targeted. Hold a master
 evidence ledger of every role and measurable result, rewrite it into a
 reverse-chronological document that survives an ATS and a 30-second human scan,
 and render a tailored version plus a keyword-gap report for each role the client
