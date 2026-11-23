@@ -7,23 +7,23 @@ tags: [fleet, index]
 
 # Fleet
 
-Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
+Ten bots: nine per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision), `paused` (archived —
 kept, not deleted). Verified against every `bots/*/BOT.md` on 2026-11-23: status
 and live-loop count are read from each BOT.md's frontmatter and its own Loops
 table; "Blocked on" compresses that bot's `## Needs from the operator`, never
-invents one. Nine rows read, unchanged for the fifth day: 2 `live` at 1 loop
-each, 6 `seeding` at 0, `ssi` `blocked` at 0.
+invents one. Ten rows read: 2 `live` at 1 loop each, 7 `seeding` at 0, `ssi` `blocked` at 0;
+`resume` (Folio) joined 2026-11-23 as the tenth, `seeding` at 0.
 `ssi` now stands at **16 days blocked** (seeded 2026-11-07) with no human reply,
 so the demote-to-`paused` rule is overdue — but the row is Beacon's BOT.md, which
 only its owner edits, so the demotion is owed as a one-line owner edit rather
 than applied from here; `bot-archive` is the format that edit follows. Loop
-bookkeeping holds: **13 loops declared, 13 on disk**, none orphaned
+bookkeeping holds: **14 loops declared, 14 on disk**, none orphaned
 and none missing.
-Gates green at this commit: `verify_bots.py` 9 bots /
-37 skills / 13 loops / 0 problems, `senter_agent . --json` parses (92
-documents), `pytest` 206 passed, 4 slow skipped. The 37th is
+Gates green at this commit: `verify_bots.py` 10 bots /
+41 skills / 14 loops / 0 problems, `senter_agent . --json` parses (92
+documents), `pytest` 206 passed, 4 slow skipped. The 37th was
 `bot-wiki/bot-archive`, written 2026-11-22 for the overdue first archive; four
 orphan skills still need one line each in their owners' Skills tables. Both
 `live` loops are backed by real cron jobs, not just declared state —
@@ -33,18 +33,20 @@ orphan skills still need one line each in their owners' Skills tables. Both
 with no job behind it is an index bug.
 
 **No open row is claimable by this loop** (verified 2026-11-23, oldest first).
-The 25 open `[ ]` rows across the ten queue files sort into five classes and only
-these: **11 loop arms** (ai-daw `engine-watch`, anser `corpus-refresh`, kart-racer
-`roster-sync`, ssi `deadline-watch` and fleet `ssi:deadline-watch-arm`, pocketshop
-`ev-discovery` and `sale-watch`, turbofit `artifact-audit` and `release-gate`,
-youtube `nightly-ingest` and `weekly-cut`), which this loop may not perform; **3
+The 28 open `[ ]` rows across the eleven queue files sort into five classes and
+only these: **12 loop arms** (ai-daw `engine-watch`, anser `corpus-refresh`,
+kart-racer `roster-sync`, ssi `deadline-watch` and fleet `ssi:deadline-watch-arm`,
+pocketshop `ev-discovery` and `sale-watch`, turbofit `artifact-audit` and
+`release-gate`, youtube `nightly-ingest` and `weekly-cut`, resume `metrics-sweep`),
+which this loop may not perform; **4
 skill-gated** (`kart-racer/item-system`, `ssi/appeal-packet`, youtube
-`broll-library`), each waiting on an artifact that does not exist yet — a first
+`broll-library`, resume `interview-prep`), each waiting on an artifact that does not exist yet — a first
 playable cup, a first denial, a first render; **2 owner BOT.md edits**
 (`skills-declare-orphans`, `kart-racer:needs-decision`), filed as pointers
-because only the owning bot declares; **8 operator-gated** (`ssi:private-profile`
+because only the owning bot declares; **9 operator-gated** (`ssi:private-profile`
 plus Beacon's documents, Riff's GPU host and `second-engine`, Anser's channels,
-TurboSouth's Darwin quantum, Binder's `amazon-path`, Mesh's `surface-attach`);
+TurboSouth's Darwin quantum, Binder's `amazon-path`, Mesh's `surface-attach`,
+Folio's unconfirmed metrics);
 and **1 standing row this loop owns but cannot close** — bot-wiki's "promote bots
 to live as their blockers clear", whose stated premise (PR #51 pending) has been
 resolved since 2026-11-08 and whose gate is now the `bot-promote` procedure, not
@@ -69,13 +71,14 @@ the test count.
 | [[bots/anser/BOT\|anser]] | Anser | mod answer bot | seeding | 0 | X read credentials; channel list + mention policy |
 | [[bots/kart-racer/BOT\|kart-racer]] | Apex | **Nous Racers** — Unity kart racer | seeding | 0 | repo visibility; Unity version; a controller to tune deadzones |
 | [[bots/ssi/BOT\|ssi]] | Beacon | benefits paperwork (two-layer: public template + private profile) | blocked | 0 | private profile not yet created; documents in hand; any active denial |
+| [[bots/resume/BOT\|resume]] | Folio | one client's résumé: ledger, rewrite, tailoring | seeding | 0 | metric sweep not armed; unconfirmed facts list with the client |
 
 ## What is built, not just specified
 
 | Bot | Working artifact | Proof |
 |---|---|---|
 | bot-wiki | `scripts/verify_bots.py`, `tools/publish_skills.py`, `fleet-reconcile` cron; `bot-archive` for the lifecycle's other end | 9 bots + the shared `sovthpaw-voice` and `wifi-scanner-control` skills; loop has run and committed |
-| hermes | tailnet serve of the web app + 9 bot profiles | https://hermes-vps.tail6ff78b.ts.net:8443/ → 302 to Nous OAuth; `mesh-health` armed 06:30; `hermes profile list` shows all nine |
+| hermes | tailnet serve of the web app + 9 bot profiles | https://hermes-vps.tail6ff78b.ts.net:8443/ → 302 to Nous OAuth; `mesh-health` armed 06:30; `hermes profile list` shows all ten |
 | turbofit | 62 catalog variants + recipes + manifest + matrix; `release-gate` specs campaign coverage | [PR #51](https://github.com/SouthpawIN/turbofit/pull/51), 936 tests pass; 1,165-cell campaign is the evidence ledger for every `measured` rung |
 | pocketshop | `restock_math.py` + `trading_gate.py` decision math; `savings-markets` skill | 35 tests in `bots/pocketshop/tests/`; [PR #2](https://github.com/SouthpawIN/pocket-shop/pull/2) for the original EV path |
 | youtube | `scripts/cutroom.py` render + package | 27 tests on synthetic media |
@@ -83,6 +86,7 @@ the test count.
 | anser | `scripts/corpus.py` fetch/cache/cite/refuse | 12 tests, import mode needs no credentials; `faq-distill` skill written 2026-11-11 |
 | kart-racer | Unity project at [SouthpawIN/nrcu-kart](https://github.com/SouthpawIN/nrcu-kart): 7 C# scripts + 35-character roster; `.system/roster.md` — the source audit, one entry per canonical NRCU character, 71 `[[UNSOURCED]]` markers, 12 needs-decision items | 9 roster tests; `tools/check_project.py` ok; **not yet compiled** — needs a Unity editor |
 | ssi | `scripts/casefile.py` intake/deadlines/review/fill | 9 tests on synthetic AcroForm PDFs |
+| resume | `scripts/resume.py` parse/lint/ledger/keywords/render | 13 tests on synthetic résumés; a real master linted to 0 errors and rendered to .docx, read back |
 
 ## Known drift
 
