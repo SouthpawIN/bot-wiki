@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-22
+updated: 2026-11-23
 tags: [fleet, index]
 ---
 
@@ -10,27 +10,49 @@ tags: [fleet, index]
 Nine bots: eight per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision), `paused` (archived —
-kept, not deleted). Verified against every `bots/*/BOT.md` on 2026-11-22: status
+kept, not deleted). Verified against every `bots/*/BOT.md` on 2026-11-23: status
 and live-loop count are read from each BOT.md's frontmatter and its own Loops
 table; "Blocked on" compresses that bot's `## Needs from the operator`, never
-invents one. Nine rows read, unchanged for the fourth day: 2 `live` at 1 loop
+invents one. Nine rows read, unchanged for the fifth day: 2 `live` at 1 loop
 each, 6 `seeding` at 0, `ssi` `blocked` at 0.
-`ssi` now stands at **15 days blocked** (seeded 2026-11-07) with no human reply,
-so the demote-to-`paused` rule is due — but the row is Beacon's BOT.md, which
+`ssi` now stands at **16 days blocked** (seeded 2026-11-07) with no human reply,
+so the demote-to-`paused` rule is overdue — but the row is Beacon's BOT.md, which
 only its owner edits, so the demotion is owed as a one-line owner edit rather
-than applied from here; `bot-archive` (written this run) is the format that edit
-follows. Loop bookkeeping holds: **13 loops declared, 13 on disk**, none orphaned
+than applied from here; `bot-archive` is the format that edit follows. Loop
+bookkeeping holds: **13 loops declared, 13 on disk**, none orphaned
 and none missing.
 Gates green at this commit: `verify_bots.py` 9 bots /
-37 skills / 13 loops / 0 problems, `senter_agent . --json` parses (93
+37 skills / 13 loops / 0 problems, `senter_agent . --json` parses (92
 documents), `pytest` 206 passed, 4 slow skipped. The 37th is
 `bot-wiki/bot-archive`, written 2026-11-22 for the overdue first archive; four
 orphan skills still need one line each in their owners' Skills tables. Both
 `live` loops are backed by real cron jobs, not just declared state —
 `fleet-reconcile` at `0 6 * * *` and `mesh-health` at `30 6 * * *`, both in the
 `default` profile with this wiki as workdir, both `enabled: true` in
-`cron/jobs.json`. A loop whose BOT.md says `live` with no job behind it is an
-index bug.
+`cron/jobs.json` (4 jobs there, 2 of them these). A loop whose BOT.md says `live`
+with no job behind it is an index bug.
+
+**No open row is claimable by this loop** (verified 2026-11-23, oldest first).
+The 25 open `[ ]` rows across the ten queue files sort into five classes and only
+these: **11 loop arms** (ai-daw `engine-watch`, anser `corpus-refresh`, kart-racer
+`roster-sync`, ssi `deadline-watch` and fleet `ssi:deadline-watch-arm`, pocketshop
+`ev-discovery` and `sale-watch`, turbofit `artifact-audit` and `release-gate`,
+youtube `nightly-ingest` and `weekly-cut`), which this loop may not perform; **3
+skill-gated** (`kart-racer/item-system`, `ssi/appeal-packet`, youtube
+`broll-library`), each waiting on an artifact that does not exist yet — a first
+playable cup, a first denial, a first render; **2 owner BOT.md edits**
+(`skills-declare-orphans`, `kart-racer:needs-decision`), filed as pointers
+because only the owning bot declares; **8 operator-gated** (`ssi:private-profile`
+plus Beacon's documents, Riff's GPU host and `second-engine`, Anser's channels,
+TurboSouth's Darwin quantum, Binder's `amazon-path`, Mesh's `surface-attach`);
+and **1 standing row this loop owns but cannot close** — bot-wiki's "promote bots
+to live as their blockers clear", whose stated premise (PR #51 pending) has been
+resolved since 2026-11-08 and whose gate is now the `bot-promote` procedure, not
+a queue row. The operator's asks are named per bot in each `## Needs from the
+operator` and compressed into the `Blocked on` column below;
+`$HERMES_PRIVATE/ssi/profile.md` is still absent on 2026-11-23. So this run
+claims nothing by rule, not by idleness, and writes no injection repeating an ask
+`bot-archive` already phrased once.
 `kart-racer`'s character audit closed 2026-11-18: `.system/roster.md` carries
 one sourced entry per canonical NRCU character (35), 71 `[[UNSOURCED]]` markers
 and 12 needs-decision items, so the proof cell reads the audit rather than only
@@ -80,13 +102,13 @@ the test count.
   TurboSouth closed its own share of this on 2026-11-15 by declaring
   `support-verify`, and Binder its share on 2026-11-20 by declaring
   `savings-markets`, which proves the fix is a one-line edit the owner makes, not
-  a fleet rewrite; two owners are still to move.
+  a fleet rewrite; three owners are still to move (ai-daw, anser, turbofit).
 - `ssi`: the program inventory the fleet queue still lists as missing to-do work
   is already written into `bots/ssi/BOT.md` (six programs, first form each,
   2026-11-07). The bot is now explicitly two-layer — public template plus
   `$HERMES_PRIVATE/ssi/profile.md` — so what still blocks specific operation is
-  the operator creating that private profile, not missing writing. At 15 days
-  blocked the demotion to `paused` is due as an owner edit; `bot-archive` now
+  the operator creating that private profile, not missing writing. At 16 days
+  blocked the demotion to `paused` is overdue as an owner edit; `bot-archive` now
   carries the exact four lines that edit touches, so the pause and its unpause
   ask cannot drift apart.
 - **Private-profile pattern.** Where a bot needs household/account/device facts,
