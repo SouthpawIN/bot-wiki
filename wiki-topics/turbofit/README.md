@@ -128,6 +128,10 @@ Serving paths are dispatched per model by `runtime_flavor` in its recipe. A mode
 
 Agent sessions now reuse their prompt on every backend, Apple Silicon included, so a long session no longer re-reads the whole prompt each turn.
 
+**Speed figures are not comparable across concurrency.** A vendor "4,087 tok/s" is 64 simultaneous requests on an RTX 5090. The same stack on one request and a 12 GB card is **~35 tok/s, and only up to 16K context** — below this project's 64K floor. So on 12–16 GB cards Inkling runs under **Unsloth's llama.cpp build**, which splits the attention buffer; mainline llama.cpp cannot load 256K there at all. Strata is the engine from 24 GB up, where it holds the required context.
+
+**Inkling and Qwen Flash Next split by job, not by size.** Independent measurement on a 12 GB 3060 and a 16 GB 5060 Ti: both score 20.1 on the Artificial Analysis Index, Qwen wins task execution (5 pass / 1 partial versus 3 pass / 3 partial on six agent tasks), and **Inkling wins repair** — it fixed all three bugs from symptoms alone, including tracing a broken water system from source without seeing the render, where Qwen fixed one of two. Inkling is also the slower of the two on those cards: ~18–20 tok/s against 45–51 for a Qwen 35B-A3B.
+
 **Engine choice is workload-shaped, not one winner.** On the same 96 GB rig, vLLM reads a cold 22K prompt at ~21.8K tok/s against ~1.5K for Strata/Basalt — about 10×, which is ~3–4 s to first token instead of ~50 s on a cold 80K agentic prompt. Strata wins the warm multi-turn case through prompt reuse. Verified external profiles for both live in [`runtime-profiles/`](runtime-profiles/), each with its sweep receipts:
 
 - **vLLM · Inkling 2 Mini · 1×96** — DSpark spec 7, FP8 KV, prefix caching: **246 tok/s** C1 mean, 429 tok/s at 8 users, tool calls 5/5. FP8 KV is what makes 262K fit on one card.
