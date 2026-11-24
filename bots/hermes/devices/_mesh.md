@@ -19,6 +19,7 @@ wired, verified, and how to re-verify it.
 | Web app (dashboard) | **https://hermes-vps.tail6ff78b.ts.net:8443/** |
 | Local dashboard port | 9119 (platform-managed; loopback) |
 | Auth | Nous OAuth (`/auth/login?provider=nous`) — the tailnet is transport, not auth |
+| OAuth callback origin | `https://substantial-manchester-6941.agents.nousresearch.com` (from `HERMES_DASHBOARD_PUBLIC_URL`, platform-set). A sign-in started on the ts.net name returns here, so the ts.net origin never receives the session cookie — open question: change the public URL or make the platform URL the documented device entry point. |
 | TurboFit gateway | https://hermes-vps.tail6ff78b.ts.net/ → 127.0.0.1:8091 (pre-existing) |
 | Verified | 2026-11-08 — HTTP/2 302 → `/auth/login?provider=nous`, `server: uvicorn` |
 
