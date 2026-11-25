@@ -62,13 +62,28 @@ fact or credential before it lands), `python scripts/verify_bots.py .`, and
 cd ~/work/agent-wiki
 python -m senter_agent . --json | jq '.documents, (.proposals|length)'
 python -m senter_agent . --status
-python scripts/verify_bots.py .          # bots=9 skills=N loops=N problems=0
+python scripts/verify_bots.py .          # bots=10 skills=41 loops=14 problems=0
 python tools/privacy_gate.py . --staged  # pre-commit gate; must exit 0
 PYTHONPATH=.:/opt/data/pylibs /opt/data/.local/bin/pytest -q
 # `python -m pytest` fails here: the hermes venv has no pytest. Use the binary.
 # this container's venv has no pypdf either; tests need it on the path.
 # ~25 min: youtube's assemble tests render 1080p60 x264. Run in the background.
 ```
+
+**Publish is two roots, not one.** `tools/publish_skills.py` with no argument
+writes `$HERMES_HOME/skills`, which under cron is `/opt/data/skills`; a session
+started with the default home reads `~/.hermes/skills`. Render both and
+byte-diff each — mtimes across the two roots prove nothing (the 2026-11-24 run
+"published" and left one root three days stale):
+
+```bash
+python tools/publish_skills.py .                 # $HERMES_HOME/skills
+python tools/publish_skills.py . /opt/data/.hermes   # the other root
+```
+
+A loader does not render its BOT.md's `## Log`, so log-only edits change no
+loader; a changed mission or Resuming section does.
+
 
 Under cron, three of those commands need a different form — the approval policy
 runs without a user, so a blocked command kills the run before it can repair
@@ -82,6 +97,13 @@ anything:
   same result, nothing uncommitted survives, and it is not on the danger list.
 - `rsync` is not installed; mirror `.system/` between clones with
   `cp -a "$d/." "bots/$slug/.system/"`.
+- `execute_code` is disabled outright for unattended sessions, and so is any
+  `python3 -c` / `-e` one-liner. Put the script in `$TMPDIR` and run
+  `python3 $TMPDIR/<name>.py`; heredocs and `rm -rf` are refused too.
+- Before concluding a bot is idle, check `.system/` in **both** clones. Folio's
+  `queue.md`, `continuity.md` and `injections.md` existed only in the live clone
+  on 2026-11-25, so a reconcile from the working clone counted 24 open rows
+  instead of 27; `cp -a` both ways, then say what you counted.
 
 ## Where the state lives
 
