@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-24
+updated: 2026-11-25
 tags: [fleet, index]
 ---
 
@@ -10,7 +10,7 @@ tags: [fleet, index]
 Ten bots: nine per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision), `paused` (archived —
-kept, not deleted). Verified against every `bots/*/BOT.md` on 2026-11-24: status
+kept, not deleted). Verified against every `bots/*/BOT.md` on 2026-11-25: status
 and live-loop count are read from each BOT.md's frontmatter and its own Loops
 table; "Blocked on" compresses that bot's `## Needs from the operator`, never
 invents one. Ten rows read against ten BOT.md files and all ten agree: 2 `live`
@@ -19,27 +19,34 @@ at 1 loop each, 7 `seeding` at 0, `ssi` `blocked` at 0. Loop bookkeeping holds:
 the other twelve `spec`/`ready`. Four of the 41 skills are still undeclared in
 their owner's Skills table (named under Known drift), which the validator counts
 rather than hides.
-`ssi` now stands at **17 days blocked** (seeded 2026-11-07) with no human reply,
+`ssi` now stands at **18 days blocked** (seeded 2026-11-07) with no human reply,
 so the demote-to-`paused` rule is overdue — but the row is Beacon's BOT.md, which
 only its owner edits, so the demotion is owed as a one-line owner edit rather
 than applied from here; `bot-archive` is the format that edit follows.
 Gates green at this commit: `verify_bots.py` 10 bots / 41 skills / 14 loops / 0
-problems, `senter_agent . --json` parses (99 documents), `pytest` 218 passed,
-5 slow skipped, privacy gate PASS. Published loaders are current as of
-2026-11-24 15:23 — ten `bot-<slug>` skills plus the two fleet skills — and that
-is this run's finding, not a restatement: `bot-resume` did not exist at all
-(Folio was seeded 2026-11-23 and its log claimed a publish that left nothing in
-`$HERMES_HOME/skills/bots/`, so the tenth bot could not be loaded as a skill),
-and the `bot-bot-wiki` and `bot-hermes` loaders were older than their BOT.md. A
-published skill older than its BOT.md is drift; one that is missing is a bot that
-does not exist from a session's side. Both `live` loops are backed by real cron
-jobs, not just declared state — `fleet-reconcile` at `0 6 * * *` and
-`mesh-health` at `30 6 * * *`, both in the `default` profile with this wiki as
-workdir, both active in `hermes cron list` (4 jobs there, 2 of them these). A
-loop whose BOT.md says `live` with no job behind it is an index bug.
+problems, `senter_agent . --json` parses (98 documents, 99 proposals), `pytest`
+218 passed with 5 slow skipped, privacy gate PASS. Loaders exist in **two** install roots and both are now current:
+`$HERMES_HOME/skills` (`/opt/data/skills` under cron — the root this runtime
+reads) and `~/.hermes/skills` (what a session started with the default home
+would read). `tools/publish_skills.py` defaults to `$HERMES_HOME`, so the
+2026-11-24 run refreshed the first and left the second at 2026-11-23 21:08;
+rendering into both, then byte-diffing, is the check — an mtime comparison
+across roots proved nothing, and the mtime rule written here last run is
+replaced. A loader does not render its BOT.md's `## Log`, so today's only real
+loader change was `bot-bot-wiki` ("Nine projects" → ten). A published skill
+older than its BOT.md is drift; one that is missing
+is a bot that does not exist from a session's side. Both `live` loops are backed
+by active cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *`
+(last run 2026-11-24 15:26) and `mesh-health` at `30 6 * * *` (last run
+2026-11-25 23:01, ok), both in the `default` profile with this wiki as workdir,
+4 jobs there. A loop whose BOT.md says `live` with no job behind it is an index
+bug. Both fired today only as catch-up dispatches (`fleet-reconcile` 17h late,
+`mesh-health` 16h 30m late), so a green `last run: ok` line does not mean the
+schedule held.
 
 **One standing row closed as superseded; nothing else was claimable** (verified
-2026-11-24, oldest first). The 28 open `[ ]` rows across the eleven queue files
+2026-11-24, re-verified 2026-11-25 oldest first: same classes, no row became
+claimable). The 28 open `[ ]` rows across the eleven queue files
 sorted into five classes and only these: **12 loop arms** (ai-daw
 `engine-watch`, anser `corpus-refresh`, kart-racer `roster-sync`, ssi
 `deadline-watch` and fleet `ssi:deadline-watch-arm`, pocketshop `ev-discovery`
@@ -61,14 +68,16 @@ gate step 1 — its loop run by hand end-to-end once, with output the operator c
 look at — has been met by none. Every loop outside the two `live` ones is still
 `spec`/`ready` with no cron job, and hermes is already `live`, so "promote as
 blockers clear" has no subject left to act on; the recurring half is the
-`bot-promote` procedure plus the `Blocked on` column below. 27 open rows remain,
-each held by one of the classes above. The operator's asks are named per bot in
+`bot-promote` procedure plus the `Blocked on` column below. 27 open rows remain
+(24 in this clone's ten queues plus Folio's three, now mirrored here — see Known
+drift), each held by one of the classes above. The operator's asks are named per bot in
 each `## Needs from the operator` and compressed into the `Blocked on` column;
-`$HERMES_PRIVATE/ssi/profile.md` is still absent on 2026-11-24 (while
+`$HERMES_PRIVATE/ssi/profile.md` is still absent on 2026-11-25 (while
 `$HERMES_PRIVATE/resume/profile.md` exists, which is why Folio is `seeding` with
-specific operation unblocked and its loop unarmed). This run writes one
-injection — the publish finding — and does not re-state the ssi ask that
-`bot-archive` phrased once.
+specific operation unblocked and its loop unarmed). This page's 2026-11-25
+re-check writes one injection — Folio's queue was missing from the working
+clone, so its three rows were invisible to a reconcile run from there — and
+does not re-state the ssi ask that `bot-archive` phrased once.
 `kart-racer`'s character audit closed 2026-11-18: `.system/roster.md` carries
 one sourced entry per canonical NRCU character (35), 71 `[[UNSOURCED]]` markers
 and 12 needs-decision items, so the proof cell reads the audit rather than only
@@ -154,7 +163,15 @@ the test count.
   both clones have been carrying tracked edits to `bots/_fleet/.system/queue.md`
   since it was force-added, so the queue is now half-tracked: edits to it commit,
   edits to `bots/<slug>/.system/*` do not. Worth either tracking the whole tree
-  or none of it; until then the queue lives in the clone that wrote it.
+  or none of it; until then the queue lives in the clone that wrote it. This
+  bit for real on 2026-11-25: `bots/resume/.system/` in the working clone
+  (`~/work/agent-wiki`) held only `profiles/`, while the live clone
+  (`~/.hermes/wiki`) held Folio's `queue.md` (three open rows), `continuity.md`
+  and `injections.md`. A reconcile run from the working clone therefore counted
+  24 open rows, not 27, and reported Folio as idle — the "empty queue is a
+  missing clone" trap on exactly one bot. Both clones now carry all four files;
+  the durable fix is a start-of-run `cp -a ~/.hermes/wiki/bots/*/.system/` into
+  the working clone (or a single clone), not another prose note.
 - Both clones were corrupt again at the 2026-11-13 run: five zero-byte loose
   objects in `~/.hermes/wiki`, `HEAD` unreadable, no working tree. The documented
   repair (delete only 0-byte objects, `git fetch`, `git reset --mixed
