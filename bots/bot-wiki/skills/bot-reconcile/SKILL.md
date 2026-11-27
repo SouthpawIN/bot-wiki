@@ -105,6 +105,30 @@ anything:
   on 2026-11-25, so a reconcile from the working clone counted 24 open rows
   instead of 27; `cp -a` both ways, then say what you counted.
 
+## Pitfall — "arm after one manual run" is not a loop arm
+
+A queue row that reads `arm after one manual run` is blocked on *work*, not on
+arming: run the loop by hand (`bot-promote` gate step 1), write the artifact at
+the path the loop's `## Prompt` names, and only the `cronjob_manage` half is
+left — for the operator. Counting such a row as "a loop arm this loop may not
+perform" idles the fleet for as long as the manual run stays undone; three
+consecutive reconcile runs (2026-11-24, 11-25, 11-27) did exactly that to
+`turbofit/artifact-audit` before anyone read its reason instead of its class.
+
+Gate the manual run the way `bot-promote` does: artifact at the predicted path, a
+second run byte-identical (compare sha256), and a deliberately broken input that
+reports an error rather than a clean result. A check that still prints "nothing
+changed" after its own requests failed has not passed.
+
+## Pitfall — Hugging Face `/tree` is not recursive
+
+`/api/models/<repo>/tree/main` lists the root only, so a repo whose quants sit in
+subdirectories (split shards under `UD-Q4_K_M/…`) looks empty and every catalog
+artifact reads "missing". Request `?recursive=true` for both the HEAD tree and
+the pinned revision's tree, and compare **sizes**, not just shas: a re-upload
+under a moved pin shows up as a size delta, and a delta under ~4 KiB is a
+metadata header rather than a re-quant — do not mark rungs stale on that alone.
+
 ## Where the state lives
 
 `.system/` is **gitignored**. Queues, `continuity.md` and `injections.md` exist

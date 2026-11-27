@@ -18,6 +18,7 @@ one-line ask.
 - [ ] `hermes:surface-attach` — attach the Surface and phone to the tailnet web app and record serve/tailnet/profile steps in `devices/_mesh.md` | sources: bots/hermes/BOT.md
 - [ ] `pocketshop:amazon-path` — decide whether Amazon gets real drafts or CSV export, and record the platform choice per card class | sources: bots/pocketshop/BOT.md
 - [ ] `skills-declare-orphans` — `ai-daw/stem-separation`, `anser/faq-distill`, `turbofit/benchmark-rung` and `turbofit/peer-discovery` exist on disk and pass the validator but none is named in its own BOT.md Skills table, so the owning bot's published skill list cannot reach it; one line each, owners only | sources: bots/_fleet/FLEET.md, bots/ai-daw/BOT.md, bots/anser/BOT.md, bots/turbofit/BOT.md
+- [ ] `turbofit:pin-drift` — TurboSouth owns this one (catalog edit): the 2026-11-27 manual audit found three artifact sets re-uploaded under their catalog pins — `ggml-org/Qwen3.8-27B-GGUF` Q4_K_M 18.97 → 19.40 GB, `unsloth/MiniMax-M3-GGUF` UD-Q4_K_M shard 1 8.2 MB → 904.8 MB, `poolside/Laguna-S-2.1-GGUF` Q4_K_M 75.17 → 96.03 GB — so the five rungs using them need `stale: true` or a repin, and two repos (`peasantsmith/GLM-5.3-Flash-Maya-GGUF`, `strata-engine/Inkling-2-Mini-Strata`) are behind HEAD with identical bytes and safe to repin; full table in `bots/turbofit/.system/last-audit.md` | sources: bots/turbofit/.system/last-audit.md, references/model-catalog.json
 
 ## Skill
 
@@ -26,6 +27,7 @@ one-line ask.
 ## Loop
 
 - [ ] `ssi:deadline-watch-arm` — arm the daily 07:00 deadline watch once the private profile exists; it is read-only and must stay read-only | sources: bots/ssi/loops/deadline-watch.md
+- [ ] `turbofit:artifact-audit-arm` — arm `artifact-audit` at `0 7 * * 1` (Monday 07:00) now that the 2026-11-27 manual run passed the `bot-promote` gate end-to-end; read-only Hugging Face revision check, writes `bots/turbofit/.system/last-audit.md`, stops on HTTP 429 rather than burning the day's budget. Arming plus the `spec` → `live` row and `seeding` → `live` frontmatter are the owner's edits, not this loop's | sources: bots/turbofit/loops/artifact-audit.md, bots/turbofit/.system/last-audit.md, bots/bot-wiki/skills/bot-promote/SKILL.md
 
 ## Context
 

@@ -1,7 +1,7 @@
 ---
 type: index
 title: Fleet
-updated: 2026-11-25
+updated: 2026-11-27
 tags: [fleet, index]
 ---
 
@@ -10,7 +10,7 @@ tags: [fleet, index]
 Ten bots: nine per topic, plus `bot-wiki` (Klerik), which maintains the method
 they all run on. Status legend: `live` (running now), `seeding` (skills written,
 loops not yet armed), `blocked` (needs a human decision), `paused` (archived —
-kept, not deleted). Verified against every `bots/*/BOT.md` on 2026-11-25: status
+kept, not deleted). Verified against every `bots/*/BOT.md` on 2026-11-27: status
 and live-loop count are read from each BOT.md's frontmatter and its own Loops
 table; "Blocked on" compresses that bot's `## Needs from the operator`, never
 invents one. Ten rows read against ten BOT.md files and all ten agree: 2 `live`
@@ -18,66 +18,76 @@ at 1 loop each, 7 `seeding` at 0, `ssi` `blocked` at 0. Loop bookkeeping holds:
 **14 loops declared, 14 on disk**, none orphaned and none missing — two `live`,
 the other twelve `spec`/`ready`. Four of the 41 skills are still undeclared in
 their owner's Skills table (named under Known drift), which the validator counts
-rather than hides.
-`ssi` now stands at **18 days blocked** (seeded 2026-11-07) with no human reply,
+rather than hides. The table needed one repair, not a rewrite: Folio's
+`Blocked on` cell named an "unconfirmed facts list" that its own
+`## Needs from the operator` never mentions, so it now reads the three holds
+that section actually states — confirm the profile shape, approve arming
+`metrics-sweep`, decide the one-page default.
+`ssi` now stands at **20 days blocked** (seeded 2026-11-07) with no human reply,
 so the demote-to-`paused` rule is overdue — but the row is Beacon's BOT.md, which
 only its owner edits, so the demotion is owed as a one-line owner edit rather
 than applied from here; `bot-archive` is the format that edit follows.
 Gates green at this commit: `verify_bots.py` 10 bots / 41 skills / 14 loops / 0
-problems, `senter_agent . --json` parses (98 documents, 99 proposals), `pytest`
-218 passed with 5 slow skipped, privacy gate PASS. Loaders exist in **two** install roots and both are now current:
+problems, `senter_agent . --json` parses (99 documents, 100 proposals), `pytest`
+218 passed with 5 skipped, privacy gate PASS. Loaders exist in **two** install roots and both are current:
 `$HERMES_HOME/skills` (`/opt/data/skills` under cron — the root this runtime
 reads) and `~/.hermes/skills` (what a session started with the default home
 would read). `tools/publish_skills.py` defaults to `$HERMES_HOME`, so the
 2026-11-24 run refreshed the first and left the second at 2026-11-23 21:08;
 rendering into both, then byte-diffing, is the check — an mtime comparison
 across roots proved nothing, and the mtime rule written here last run is
-replaced. A loader does not render its BOT.md's `## Log`, so today's only real
-loader change was `bot-bot-wiki` ("Nine projects" → ten). A published skill
+replaced. This run re-rendered both roots into scratch and diffed them against
+each install root: identical, so a prose-only run owes no republish. A loader
+does not render its BOT.md's `## Log`, so today's only loader change was
+`bot-bot-wiki` ("Nine projects" → ten). A published skill
 older than its BOT.md is drift; one that is missing
 is a bot that does not exist from a session's side. Both `live` loops are backed
 by active cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *`
-(last run 2026-11-24 15:26) and `mesh-health` at `30 6 * * *` (last run
-2026-11-25 23:01, ok), both in the `default` profile with this wiki as workdir,
+(last completed 2026-11-26 23:01, ok) and `mesh-health` at `30 6 * * *` (last run
+2026-11-27 10:12, ok), both in the `default` profile with this wiki as workdir,
 4 jobs there. A loop whose BOT.md says `live` with no job behind it is an index
-bug. Both fired today only as catch-up dispatches (`fleet-reconcile` 17h late,
-`mesh-health` 16h 30m late), so a green `last run: ok` line does not mean the
-schedule held.
+bug. Both fired this morning as catch-up dispatches — `fleet-reconcile` 4h 11m
+late and `mesh-health` 3h 41m late — so a green `last run: ok` line still does
+not mean the schedule held.
 
-**One standing row closed as superseded; nothing else was claimable** (verified
-2026-11-24, re-verified 2026-11-25 oldest first: same classes, no row became
-claimable). The 28 open `[ ]` rows across the eleven queue files
-sorted into five classes and only these: **12 loop arms** (ai-daw
-`engine-watch`, anser `corpus-refresh`, kart-racer `roster-sync`, ssi
-`deadline-watch` and fleet `ssi:deadline-watch-arm`, pocketshop `ev-discovery`
-and `sale-watch`, turbofit `artifact-audit` and `release-gate`, youtube
-`nightly-ingest` and `weekly-cut`, resume `metrics-sweep`), which this loop may
-not perform; **4 skill-gated** (`kart-racer/item-system`, `ssi/appeal-packet`,
-youtube `broll-library`, resume `interview-prep`), each waiting on an artifact
-that does not exist yet — a first playable cup, a first denial, a first render,
-a first live application; **2 owner BOT.md edits** (`skills-declare-orphans`,
-`kart-racer:needs-decision`), filed as pointers because only the owning bot
-declares; **9 operator-gated** (`ssi:private-profile` plus Beacon's documents,
-Riff's GPU host and `second-engine`, Anser's channels, TurboSouth's Darwin
-quant, Binder's `amazon-path`, Mesh's `surface-attach`, Folio's unconfirmed
-metrics); and **1 standing row this loop owned** — bot-wiki's "promote bots to
-`live` as their blockers clear", whose named premise (PR #51) has been merged
-since 2026-11-08. That row was audited against the `bot-promote` gate this run
-and closed as superseded, **not** as promotion: no bot is promotable, because
-gate step 1 — its loop run by hand end-to-end once, with output the operator can
-look at — has been met by none. Every loop outside the two `live` ones is still
-`spec`/`ready` with no cron job, and hermes is already `live`, so "promote as
-blockers clear" has no subject left to act on; the recurring half is the
-`bot-promote` procedure plus the `Blocked on` column below. 27 open rows remain
-(24 in this clone's ten queues plus Folio's three, now mirrored here — see Known
-drift), each held by one of the classes above. The operator's asks are named per bot in
-each `## Needs from the operator` and compressed into the `Blocked on` column;
-`$HERMES_PRIVATE/ssi/profile.md` is still absent on 2026-11-25 (while
+**One row the tally had mis-classified was runnable, and this run took it**
+(2026-11-27, oldest first). The 28 open `[ ]` rows across the eleven queue files
+had been sorted into five classes for three runs running, and
+`turbofit/artifact-audit` — "arm after one manual run" — was counted as a loop
+arm every time. It was not one: its blocker was a *manual run*, which is this
+loop's own work and exactly `bot-promote` gate step 1. Claimed and completed:
+every distinct catalog source (30) checked against Hugging Face HEAD and written
+to `bots/turbofit/.system/last-audit.md`. **5 pins are behind HEAD and 3 artifact
+sets were silently re-uploaded** — `ggml-org/Qwen3.8-27B-GGUF` Q4_K_M 18.97 →
+19.40 GB, `unsloth/MiniMax-M3-GGUF` UD-Q4_K_M shard 1 8.2 MB → 904.8 MB,
+`poolside/Laguna-S-2.1-GGUF` Q4_K_M 75.17 → 96.03 GB — which leaves five rungs
+stale until TurboSouth repins; two more repos are behind HEAD with identical
+bytes and 5 files were added upstream since their pins. Gate evidence: artifact
+at the path the loop predicted, a second run byte-identical, and a deliberately
+bogus source reported as `HTTP 401` under "Unchecked — no conclusion" instead of
+a clean audit; zero downloads, zero cost. The remaining **29 open rows** fall
+into five classes: **11 loop arms** (ai-daw `engine-watch`, anser
+`corpus-refresh`, kart-racer `roster-sync`, ssi `deadline-watch` and fleet
+`ssi:deadline-watch-arm`, pocketshop `ev-discovery` and `sale-watch`, youtube
+`nightly-ingest` and `weekly-cut`, resume `metrics-sweep`, plus the
+`turbofit:artifact-audit-arm` this run filed), which this loop may not perform;
+**10 operator-gated** (`ssi:private-profile` plus Beacon's documents, Riff's GPU
+host and `second-engine`, Anser's channels, TurboSouth's Darwin quant, Binder's
+`amazon-path`, Mesh's `surface-attach`, Folio's client facts, and youtube's
+operator-deferred `long-session-parts`); **4 skill-gated**
+(`kart-racer/item-system`, `ssi/appeal-packet`, youtube `broll-library`, resume
+`interview-prep`), each waiting on an artifact that does not exist yet — a first
+playable cup, a first denial, a first render, a first live application; **2 owner
+BOT.md edits** (`skills-declare-orphans`, `kart-racer:needs-decision`), filed as
+pointers because only the owning bot declares; and **2 bot-owned repo edits**
+this run filed — `turbofit:pin-drift` (repin or mark five rungs stale) and
+`turbofit:release-gate`'s tag hook. The operator's asks are named per bot in each
+`## Needs from the operator` and compressed into the `Blocked on` column;
+`$HERMES_PRIVATE/ssi/profile.md` is still absent on 2026-11-27 (while
 `$HERMES_PRIVATE/resume/profile.md` exists, which is why Folio is `seeding` with
-specific operation unblocked and its loop unarmed). This page's 2026-11-25
-re-check writes one injection — Folio's queue was missing from the working
-clone, so its three rows were invisible to a reconcile run from there — and
-does not re-state the ssi ask that `bot-archive` phrased once.
+specific operation unblocked and its loop unarmed). The rule the run leaves
+behind: a row whose text is "arm after one manual run" is not an arm until the
+manual run exists — read the reason, not the class.
 `kart-racer`'s character audit closed 2026-11-18: `.system/roster.md` carries
 one sourced entry per canonical NRCU character (35), 71 `[[UNSOURCED]]` markers
 and 12 needs-decision items, so the proof cell reads the audit rather than only
@@ -94,7 +104,7 @@ the test count.
 | [[bots/anser/BOT\|anser]] | Anser | mod answer bot | seeding | 0 | X read credentials; channel list + mention policy |
 | [[bots/kart-racer/BOT\|kart-racer]] | Apex | **Nous Racers** — Unity kart racer | seeding | 0 | repo visibility; Unity version; a controller to tune deadzones |
 | [[bots/ssi/BOT\|ssi]] | Beacon | benefits paperwork (two-layer: public template + private profile) | blocked | 0 | private profile not yet created; documents in hand; any active denial |
-| [[bots/resume/BOT\|resume]] | Folio | one client's résumé: ledger, rewrite, tailoring | seeding | 0 | metric sweep not armed; unconfirmed facts list with the client |
+| [[bots/resume/BOT\|resume]] | Folio | one client's résumé: ledger, rewrite, tailoring | seeding | 0 | profile shape unconfirmed; `metrics-sweep` unarmed; one-page default undecided |
 
 ## What is built, not just specified
 
@@ -102,7 +112,7 @@ the test count.
 |---|---|---|
 | bot-wiki | `scripts/verify_bots.py`, `tools/publish_skills.py`, `fleet-reconcile` cron; `bot-archive` for the lifecycle's other end | 10 bot loaders + the shared `sovthpaw-voice` and `wifi-scanner-control` skills, re-rendered 2026-11-24; loop has run and committed |
 | hermes | tailnet serve of the web app + 9 bot profiles | https://hermes-vps.tail6ff78b.ts.net:8443/ → 302 to Nous OAuth; `mesh-health` armed 06:30; `hermes profile list` shows all ten |
-| turbofit | 62 catalog variants + recipes + manifest + matrix; `release-gate` specs campaign coverage | [PR #51](https://github.com/SouthpawIN/turbofit/pull/51), 936 tests pass; 1,165-cell campaign is the evidence ledger for every `measured` rung |
+| turbofit | 62 catalog variants + recipes + manifest + matrix; `release-gate` specs campaign coverage; `artifact-audit` run by hand 2026-11-27 | [PR #51](https://github.com/SouthpawIN/turbofit/pull/51), 936 tests pass; 1,165-cell campaign is the evidence ledger for every `measured` rung; the audit checked all 30 catalog sources against HF HEAD (5 pins behind, 3 re-uploads, 5 new files) into `bots/turbofit/.system/last-audit.md` |
 | pocketshop | `restock_math.py` + `trading_gate.py` decision math; `savings-markets` skill | 35 tests in `bots/pocketshop/tests/`; [PR #2](https://github.com/SouthpawIN/pocket-shop/pull/2) for the original EV path |
 | youtube | `scripts/cutroom.py` render + package | 27 tests on synthetic media |
 | ai-daw | `plugin/` — six `daw_*` tools, adapters, renderer | 28 tests (14 plugin + 14 engines), real audio via ffmpeg; `stem-separation` skill written 2026-11-10 |
@@ -141,7 +151,7 @@ the test count.
   is already written into `bots/ssi/BOT.md` (six programs, first form each,
   2026-11-07). The bot is now explicitly two-layer — public template plus
   `$HERMES_PRIVATE/ssi/profile.md` — so what still blocks specific operation is
-  the operator creating that private profile, not missing writing. At 17 days
+  the operator creating that private profile, not missing writing. At 20 days
   blocked the demotion to `paused` is overdue as an owner edit; `bot-archive` now
   carries the exact four lines that edit touches, so the pause and its unpause
   ask cannot drift apart.
