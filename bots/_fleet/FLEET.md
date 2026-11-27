@@ -36,10 +36,12 @@ would read). `tools/publish_skills.py` defaults to `$HERMES_HOME`, so the
 2026-11-24 run refreshed the first and left the second at 2026-11-23 21:08;
 rendering into both, then byte-diffing, is the check — an mtime comparison
 across roots proved nothing, and the mtime rule written here last run is
-replaced. This run re-rendered both roots into scratch and diffed them against
-each install root: identical, so a prose-only run owes no republish. A loader
-does not render its BOT.md's `## Log`, so today's only loader change was
-`bot-bot-wiki` ("Nine projects" → ten). A published skill
+replaced. This run's first render-to-scratch diff came back identical, which read
+as "no republish owed" — then the edit to bot-wiki's own
+`## Needs from the operator` changed its loader, because a loader renders that
+section and not the `## Log`. Both roots were re-published and now match a fresh
+render byte for byte. The rule: diff a fresh render against both roots after any
+BOT.md edit; only a log-only edit owes nothing. A published skill
 older than its BOT.md is drift; one that is missing
 is a bot that does not exist from a session's side. Both `live` loops are backed
 by active cron jobs, not just declared state — `fleet-reconcile` at `0 6 * * *`
