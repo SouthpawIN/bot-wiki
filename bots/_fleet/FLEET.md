@@ -154,8 +154,12 @@ the test count.
   history. A bot that hardcodes such a value in a tracked file is drifted,
   whatever its tests say.
 - `hermes`: the 443 serve proxy points at `127.0.0.1:8788` (nothing listening),
-  not the documented `8091`; `:9119` binds `0.0.0.0`. Recorded in its own log,
-  unfixed.
+  not the documented `8091`; day 18 as of 2026-11-27, while the gateway on 8091
+  is healthy (`/health` 200, `main: federated`). `:9119` answers on the container
+  IP as well as loopback (platform-managed bind). Control-plane map sync has gone
+  stale twice (11-13, 11-26→27) with the node listing itself `offline` while peers
+  still reach it. Recorded in its own log, unfixed — both need an operator
+  decision, not glue.
 - `bots/_fleet/skills/*` (`sovthpaw-voice`, `wifi-scanner-control`) **is now**
   installed by `tools/publish_skills.py` under `$HERMES_HOME/skills/fleet/<name>/`
   (2026-11-16), and `verify_bots.py` counts the fleet skills explicitly.
